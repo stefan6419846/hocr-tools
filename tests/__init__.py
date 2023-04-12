@@ -1,23 +1,34 @@
+import atexit
 import shutil
 import sys
+from contextlib import ExitStack
 from pathlib import Path
 from unittest import TestCase as _TestCase
 
-import pkg_resources
+if sys.version < (3, 9):
+    import importlib_resources  # noqa: F401
+else:
+    import importlib.resources as importlib_resources  # noqa: F401
 
 
 class TestCase(_TestCase):
     @classmethod
     def get_data_file(cls, path):
-        return pkg_resources.resource_filename('tests', f'data/{path}')
+        file_manager = ExitStack()
+        atexit.register(file_manager.close)
+        reference = importlib_resources.files('tests.data') / path
+        return file_manager.enter_context(
+            importlib_resources.as_file(reference)
+        )
 
     @classmethod
     def get_data_content(cls, path):
-        return pkg_resources.resource_string('tests', f'data/{path}')
+        with importlib_resources.files('tests.data').joinpath(path) as reference:
+            return reference.read_bytes()
 
     @classmethod
     def get_data_directory(cls):
-        first_file = pkg_resources.resource_listdir('tests', 'data')[0]
+        first_file = list(importlib_resources.files('tests.data'))[0]
         return Path(cls.get_data_file(first_file)).parent
 
     @classmethod

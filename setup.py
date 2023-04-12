@@ -41,6 +41,7 @@ setup(
         'dev': [
             'beautifulsoup4',
             'requests',
+            'importlib-resources; python_version<"3.9"',
         ],
     },
     packages=find_packages(where='.', include='hocr_tools.*'),

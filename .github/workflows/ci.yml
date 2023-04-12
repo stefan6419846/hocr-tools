@@ -25,9 +25,10 @@ jobs:
     - name: apt install pdfgrep
       run:
         sudo apt-get install pdfgrep
-    - name: install build requirements (APT)
+    - name: install build requirements (Python 3.12)
       run:
         sudo apt-get install libxml2 libxslt1-dev
+        python -m pip install --upgrade Cython
       if: matrix.python == '3.12-dev'
     - name: prepare pip
       run:
