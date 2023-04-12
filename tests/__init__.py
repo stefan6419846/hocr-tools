@@ -17,9 +17,9 @@ class TestCase(_TestCase):
         file_manager = ExitStack()
         atexit.register(file_manager.close)
         reference = importlib_resources.files('tests.data') / path
-        return file_manager.enter_context(
+        return str(file_manager.enter_context(
             importlib_resources.as_file(reference)
-        )
+        ))
 
     @classmethod
     def get_data_content(cls, path):
