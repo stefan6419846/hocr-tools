@@ -5,7 +5,7 @@ from contextlib import ExitStack
 from pathlib import Path
 from unittest import TestCase as _TestCase
 
-if sys.version_info < (3, 9):
+if sys.version_info < (3, 10):
     import importlib_resources  # noqa: F401
 else:
     import importlib.resources as importlib_resources  # noqa: F401
