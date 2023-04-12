@@ -27,7 +27,7 @@ jobs:
         sudo apt-get install pdfgrep
     - name: install build requirements (APT)
       run:
-        sudo apt-get install libxml2 libxslt
+        sudo apt-get install libxml2 libxslt1-dev
       if: matrix.python == '3.12-dev'
     - name: prepare pip
       run:
