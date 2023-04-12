@@ -1,8 +1,9 @@
 #!/usr/bin/env python
 
-__version__ = '1.3.0'
-
 from setuptools import find_packages, setup
+
+
+__version__ = '1.3.0'
 
 
 setup(
@@ -13,8 +14,7 @@ setup(
     maintainer='Konstantin Baierer',
     maintainer_email='konstantin.baierer@gmail.com',
     url='https://github.com/tmbdev/hocr-tools',
-    download_url='https://github.com/tmbdev/hocr-tools/tarball/v'
-                 + __version__,
+    download_url='https://github.com/tmbdev/hocr-tools/tarball/v' + __version__,
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Environment :: Console',
