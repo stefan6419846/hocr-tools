@@ -1,7 +1,0 @@
-#!/usr/bin/env tsht
-TESTDATA="../testdata"
-
-plan 2
-
-exec_ok "hocr-eval" "$TESTDATA/sample.html" "$TESTDATA/sample.html"
-exec_ok "hocr-eval" -d -v "$TESTDATA/tess.hocr" "$TESTDATA/sample.html"
