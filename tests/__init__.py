@@ -28,8 +28,8 @@ class TestCase(_TestCase):
 
     @classmethod
     def get_data_directory(cls):
-        first_file = list(importlib_resources.files('tests.data'))[0]
-        return Path(cls.get_data_file(first_file)).parent
+        first_file = next(importlib_resources.files('tests.data').iterdir())
+        return Path(cls.get_data_file(first_file.name)).parent
 
     @classmethod
     def get_data_file_copy(cls, path, directory):
