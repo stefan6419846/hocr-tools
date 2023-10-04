@@ -33,9 +33,10 @@ setup(
         'Topic :: Utilities',
     ],
     install_requires=[
-        'Pillow',
-        'lxml',
-        'reportlab',
+        'Pillow>=9.3.0',
+        'lxml>=3.5.0',
+        'reportlab>=3.3.0',
+        'python-bidi',
     ],
     extras_require={
         'dev': [
