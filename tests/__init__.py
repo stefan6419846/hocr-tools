@@ -23,8 +23,8 @@ class TestCase(_TestCase):
 
     @classmethod
     def get_data_content(cls, path):
-        with importlib_resources.files('tests.data').joinpath(path) as reference:
-            return reference.read_bytes()
+        reference = importlib_resources.files('tests.data') / path
+        return reference.read_bytes()
 
     @classmethod
     def get_data_directory(cls):
