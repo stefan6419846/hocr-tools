@@ -1,37 +1,5 @@
 # hocr-tools
 
-[![Build Status](https://travis-ci.org/UB-Mannheim/hocr-tools.svg?branch=master)](https://travis-ci.org/UB-Mannheim/hocr-tools)
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/bb25a0d5fd4c4f8c95c5acd11ffe9da5)](https://www.codacy.com/app/UB-Mannheim/hocr-tools?utm_source=github.com&utm_medium=referral&utm_content=tmbdev/hocr-tools&utm_campaign=badger)
-[![PyPI](https://img.shields.io/pypi/v/hocr-tools.svg?maxAge=86400)](https://pypi.python.org/pypi/hocr-tools)
-[![pyversions](https://img.shields.io/pypi/pyversions/hocr-tools.svg)](https://pypi.python.org/pypi/hocr-tools)
-[![license](https://img.shields.io/badge/license-Apache%202.0-yellow.svg?style=flat)](https://github.com/tmbdev/hocr-tools/blob/master/LICENSE)
-
-
-* [About](#about)
-  * [About the code](#about-the-code)
-* [Installation](#installation)
-  * [System-wide with pip](#system-wide-with-pip)
-  * [System-wide from source](#system-wide-from-source)
-  * [virtualenv](#virtualenv)
-* [Available Programs](#available-programs)
-  * [hocr-check](#hocr-check) -- check the hOCR file for errors
-  * [hocr-combine](#hocr-combine) -- combine pages in multiple hOCR files into a single document
-  * [hocr-cut](#hocr-cut) -- cut a page (horizontally) into two pages in the middle
-  * [hocr-eval](#hocr-eval) -- compute number of segmentation and OCR errors
-  * [hocr-eval-geom](#hocr-eval-geom) -- compute over, under, and mis-segmentations
-  * [hocr-eval-lines](#hocr-eval-lines) -- compute OCR errors of hOCR output relative to text ground truth
-  * [hocr-extract-g1000](#hocr-extract-g1000) -- extract lines from Google 1000 book sample
-  * [hocr-extract-images](#hocr-extract-images) -- extract the images and texts within all the ocr_line elements
-  * [hocr-lines](#hocr-lines) -- extract the text within all the ocr_line elements
-  * [hocr-merge-dc](#hocr-merge-dc) -- merge Dublin Core meta data into the hOCR HTML header
-  * [hocr-pdf](#hocr-pdf) -- create a searchable PDF from a pile of hOCR and JPEG
-  * [hocr-split](#hocr-split) -- split an hOCR file into individual pages
-  * [hocr-wordfreq](#hocr-wordfreq) -- calculate word frequency in an hOCR file
-* [Unit tests](#unit-tests)
-  * [Running the full test suite:](#running-the-full-test-suite)
-  * [Running a single test](#running-a-single-test)
-  * [Writing a test](#writing-a-test)
-
 ## About
 
 hOCR is a format for representing OCR output, including layout information,
@@ -43,14 +11,20 @@ Furthermore, unlike previous OCR formats, the recognized text and OCR-related
 information co-exist in the same file and survives editing and manipulation.
 hOCR markup is independent of the presentation.
 
-There is a [Public Specification](http://hocr.info) for the hOCR Format.
+There is a [Public Specification](http://kba.github.io/hocr-spec/1.2/) for the hOCR Format.
 
-### About the code
+### About this fork
 
-Each command line program is self contained; if you have Python 2.7 with the
-required packages installed, it should just work.  (Unfortunately, that
-means some code duplication; we may revisit this issue in later
-revisions.)
+This repository contains my own fork of the package with quite some changes:
+
+* Allow library usage and reduce code duplicates by this.
+* Migrate tests to plain *unittest*-based ones instead of some external framework.
+* Remove some deprecated code to make it compatible with latest Python 3 versions.
+
+For now, I do not have any direct plans to send a corresponding PR. Unfortunately, as for
+quite some similar OCR-related tools, development is rather inactive (at least inside the
+official GitHub repositories). Some deprecations have been discussed for a long time, as
+well as the library support (which I primarily need), with no real progress.
 
 ## Installation
 
@@ -230,46 +204,4 @@ Use `-i` to ignore upper and lower case, `-s` to split on spaces only which will
 lead to words also containing punctations, and `-y` tries to dehyphenate the text
 (separation of words at line break with a hyphen) before analysis.
 
-## Unit tests
 
-The unit tests are written using the [tsht](https://github.com/kba/tsht) framework.
-
-### Running the full test suite:
-
-```sh
-./test/tsht
-```
-
-### Running a single test
-
-```sh
-./test/tsht <path-to/unit-test.tsht>
-```
-
-e.g.
-
-```sh
-./test/tsht test/hocr-pdf/test-hocr-pdf.tsht
-```
-
-### Writing a test
-
-Please see the documentation in the [tsht](https://github.com/kba/tsht) repository and
-take a look at the existing [unit tests](./test/).
-
-1) Create a new directory under `./test`
-2) Copy any test assets (images, hOCR files...) to this directory
-3) Create a file `<name-of-your-test>.tsht` starting from this template:
-
-```sh
-#!/usr/bin/env tsht
-
-# adjust to the number of your tests
-plan 1
-
-# write your tests here
-exec_ok "hocr-foo" "-x" "foo"
-
-# remove any temporary files
-# rm some-generated-file
-```
