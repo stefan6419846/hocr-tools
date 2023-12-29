@@ -11,7 +11,7 @@ import sys
 from lxml import html
 from PIL import Image
 
-from hocr_tools.utils.node_utils import get_prop, get_text
+from hocr_tools_lib.utils.node_utils import get_prop, get_text
 
 
 def extract_images(

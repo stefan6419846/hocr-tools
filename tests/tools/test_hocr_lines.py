@@ -2,7 +2,7 @@ import contextlib
 from io import StringIO
 from unittest import mock
 
-from hocr_tools.tools import hocr_lines
+from hocr_tools_lib.tools import hocr_lines
 from tests import TestCase
 
 

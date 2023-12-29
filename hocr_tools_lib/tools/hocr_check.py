@@ -9,8 +9,8 @@ import sys
 
 from lxml import html
 
-from hocr_tools.utils.node_utils import get_bbox, get_prop
-from hocr_tools.utils.rectangle_utils import mostly_non_overlapping
+from hocr_tools_lib.utils.node_utils import get_bbox, get_prop
+from hocr_tools_lib.utils.rectangle_utils import mostly_non_overlapping
 
 
 class Checker:

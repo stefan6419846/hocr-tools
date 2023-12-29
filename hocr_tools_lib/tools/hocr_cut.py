@@ -6,7 +6,7 @@ import sys
 from lxml import html
 from PIL import Image, ImageDraw
 
-from hocr_tools.utils.node_utils import get_bbox, get_prop
+from hocr_tools_lib.utils.node_utils import get_bbox, get_prop
 
 
 logger = logging.getLogger(__name__)

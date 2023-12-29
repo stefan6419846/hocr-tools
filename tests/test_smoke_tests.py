@@ -8,7 +8,7 @@ class SmokeTests(TestCase):
     @classmethod
     def get_tool_list(cls):
         base_directory = Path(__file__).parent.parent
-        base_directory = base_directory / 'hocr_tools' / 'tools'
+        base_directory = base_directory / 'hocr_tools_lib' / 'tools'
         return [
             path.stem.replace('_', '-') for path in base_directory.glob('*.py')
             if path.stem.startswith('hocr_')

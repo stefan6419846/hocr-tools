@@ -4,11 +4,11 @@ import logging
 from lxml import html
 from PIL import Image, ImageDraw
 
-from hocr_tools.utils.edit_utils import edit_distance, remove_tex
-from hocr_tools.utils.node_utils import get_bbox, get_text
-from hocr_tools.utils.rectangle_utils import area, erode, height, intersect, \
+from hocr_tools_lib.utils.edit_utils import edit_distance, remove_tex
+from hocr_tools_lib.utils.node_utils import get_bbox, get_text
+from hocr_tools_lib.utils.rectangle_utils import area, erode, height, intersect, \
     width
-from hocr_tools.utils.text_utils import normalize
+from hocr_tools_lib.utils.text_utils import normalize
 
 
 logger = logging.getLogger(__name__)

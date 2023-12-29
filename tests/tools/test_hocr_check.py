@@ -3,7 +3,7 @@ import subprocess
 from io import StringIO
 from unittest import mock
 
-from hocr_tools.tools import hocr_check
+from hocr_tools_lib.tools import hocr_check
 from tests import TestCase
 
 

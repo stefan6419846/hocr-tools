@@ -12,7 +12,7 @@ from dataclasses import dataclass
 
 from PIL import Image
 
-from hocr_tools.utils.node_utils import get_prop
+from hocr_tools_lib.utils.node_utils import get_prop
 
 
 USAGE = """

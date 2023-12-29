@@ -2,7 +2,7 @@ import subprocess
 from tempfile import TemporaryDirectory
 from unittest import mock
 
-from hocr_tools.tools import hocr_extract_images
+from hocr_tools_lib.tools import hocr_extract_images
 from tests import chdir, TestCase
 
 

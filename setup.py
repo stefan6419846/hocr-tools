@@ -39,22 +39,24 @@ setup(
             'importlib-resources; python_version<"3.10"',
         ],
     },
-    packages=find_packages(where='.', include='hocr_tools.*'),
+    packages=find_packages(
+        include=['hocr_tools_lib', 'hocr_tools_lib.*']
+    ),
     entry_points={
         'console_scripts': [
-            'hocr-check=hocr_tools.tools.hocr_check:main',
-            'hocr-combine=hocr_tools.tools.hocr_combine:main',
-            'hocr-cut=hocr_tools.tools.hocr_cut:main',
-            'hocr-eval=hocr_tools.tools.hocr_eval:main',
-            'hocr-eval-geom=hocr_tools.tools.hocr_eval_geom:main',
-            'hocr-eval-lines=hocr_tools.tools.hocr_eval_lines:main',
-            'hocr-extract-g1000=hocr_tools.tools.hocr_extract_g1000:main',
-            'hocr-extract-images=hocr_tools.tools.hocr_extract_images:main',
-            'hocr-lines=hocr_tools.tools.hocr_lines:main',
-            'hocr-merge-dc=hocr_tools.tools.hocr_merge_dc:main',
-            'hocr-pdf=hocr_tools.tools.hocr_pdf:main',
-            'hocr-split=hocr_tools.tools.hocr_split:main',
-            'hocr-wordfreq=hocr_tools.tools.hocr_wordfreq:main',
+            'hocr-check=hocr_tools_lib.tools.hocr_check:main',
+            'hocr-combine=hocr_tools_lib.tools.hocr_combine:main',
+            'hocr-cut=hocr_tools_lib.tools.hocr_cut:main',
+            'hocr-eval=hocr_tools_lib.tools.hocr_eval:main',
+            'hocr-eval-geom=hocr_tools_lib.tools.hocr_eval_geom:main',
+            'hocr-eval-lines=hocr_tools_lib.tools.hocr_eval_lines:main',
+            'hocr-extract-g1000=hocr_tools_lib.tools.hocr_extract_g1000:main',
+            'hocr-extract-images=hocr_tools_lib.tools.hocr_extract_images:main',
+            'hocr-lines=hocr_tools_lib.tools.hocr_lines:main',
+            'hocr-merge-dc=hocr_tools_lib.tools.hocr_merge_dc:main',
+            'hocr-pdf=hocr_tools_lib.tools.hocr_pdf:main',
+            'hocr-split=hocr_tools_lib.tools.hocr_split:main',
+            'hocr-wordfreq=hocr_tools_lib.tools.hocr_wordfreq:main',
         ]
     }
 )

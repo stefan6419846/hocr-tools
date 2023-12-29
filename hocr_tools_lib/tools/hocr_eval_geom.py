@@ -2,8 +2,8 @@ import argparse
 
 from lxml import html
 
-from hocr_tools.utils.node_utils import get_bbox
-from hocr_tools.utils.rectangle_utils import overlaps, relative_overlap
+from hocr_tools_lib.utils.node_utils import get_bbox
+from hocr_tools_lib.utils.rectangle_utils import overlaps, relative_overlap
 
 
 def boxstats(truths, actuals, significant_overlap=0.1, close_match=0.9):

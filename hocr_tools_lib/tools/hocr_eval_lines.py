@@ -3,9 +3,9 @@ import logging
 
 from lxml import html
 
-from hocr_tools.utils.edit_utils import edit_distance
-from hocr_tools.utils.node_utils import get_text
-from hocr_tools.utils.text_utils import normalize
+from hocr_tools_lib.utils.edit_utils import edit_distance
+from hocr_tools_lib.utils.node_utils import get_text
+from hocr_tools_lib.utils.text_utils import normalize
 
 
 logger = logging.getLogger(__name__)

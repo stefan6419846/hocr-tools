@@ -2,7 +2,7 @@ import contextlib
 from io import StringIO
 from unittest import mock
 
-from hocr_tools.tools import hocr_merge_dc
+from hocr_tools_lib.tools import hocr_merge_dc
 from tests import TestCase
 
 

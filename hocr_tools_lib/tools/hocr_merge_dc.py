@@ -3,7 +3,7 @@ import re
 
 from lxml import etree, html
 
-from hocr_tools.utils.node_utils import get_text
+from hocr_tools_lib.utils.node_utils import get_text
 
 
 DC_KNOWN = [

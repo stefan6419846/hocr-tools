@@ -1,7 +1,7 @@
 from tempfile import TemporaryDirectory
 from unittest import mock
 
-from hocr_tools.tools import hocr_split
+from hocr_tools_lib.tools import hocr_split
 from tests import chdir, TestCase
 
 
