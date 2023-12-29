@@ -1,16 +1,21 @@
-#!/usr/bin/env python
+from pathlib import Path
 
 from setuptools import find_packages, setup
 
 
-__version__ = '1.0.0'
+__version__ = '1.0.1'
+
+ROOT_DIRECTORY = Path(__file__).parent.resolve()
 
 
 setup(
     name='hocr-tools-lib',
     version=__version__,
-    description='Advanced tools for hOCR integration',
+    description='Advanced tools for hOCR integration (library version)',
     author='Thomas Breuel, stefan6419846 (library version)',
+    license='Apache-2.0',
+    long_description=Path(ROOT_DIRECTORY / 'README.md').read_text(encoding='UTF-8'),
+    long_description_content_type='text/markdown',
     # maintainer='Konstantin Baierer',
     # maintainer_email='konstantin.baierer@gmail.com',
     url='https://github.com/stefan6419846/hocr-tools/',
@@ -58,5 +63,6 @@ setup(
             'hocr-split=hocr_tools_lib.tools.hocr_split:main',
             'hocr-wordfreq=hocr_tools_lib.tools.hocr_wordfreq:main',
         ]
-    }
+    },
+    keywords=['ocr', 'hocr', 'xhtml'],
 )
