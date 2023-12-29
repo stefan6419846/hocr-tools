@@ -28,51 +28,17 @@ well as the library support (which I primarily need), with no real progress.
 
 ## Installation
 
-### System-wide with pip
-
 You can install hocr-tools along with its dependencies from
-[PyPI](https://pypi.python.org/pypi/hocr-tools):
+[PyPI](https://pypi.python.org/pypi/hocr-tools-lib):
 
 ```sh
-sudo pip install hocr-tools
+pip install hocr-tools-lib
 ```
 
-### System-wide from source
-
-On a Debian/Ubuntu system, install the dependencies from packages:
+Or from the Git checkout:
 
 ```
-sudo apt-get install python-lxml python-reportlab python-pil \
-  python-beautifulsoup python-numpy python-scipy python-matplotlib python-setuptools
-```
-
-Or, to fetch dependencies from the [cheese shop](https://pypi.python.org/pypi):
-
-```
-sudo pip install -r requirements.txt  # basic
-```
-
-Then install the dist:
-
-```
-sudo python setup.py install
-```
-
-### virtualenv
-
-Once
-
-```
-virtualenv venv
-source venv/bin/activate
-pip install -r requirements.txt
-```
-
-Subsequently
-
-```
-source venv/bin/activate
-./hocr-...
+pip install .
 ```
 
 ## Available Programs
