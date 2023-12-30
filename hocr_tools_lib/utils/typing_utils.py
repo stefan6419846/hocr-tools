@@ -7,7 +7,8 @@ except ImportError:
     _T_co = TypeVar("_T_co", covariant=True)
 
     class SupportsRead(Protocol[_T_co]):  # type: ignore[no-redef]
-        def read(self, __length: int = ...) -> _T_co: ...
+        def read(self, __length: int = ...) -> _T_co:
+            ...
 
 
 __all__ = [
