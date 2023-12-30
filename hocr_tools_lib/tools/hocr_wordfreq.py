@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 import sys
 import re
 import argparse
@@ -7,15 +8,15 @@ from typing import cast, Callable, Generator
 
 from lxml import html
 
-from hocr_tools_lib.utils.typing_utils import SupportsRead
-
 
 def word_frequencies(
-        hocr_in: SupportsRead[str], case_insensitive: bool = False, spaces: bool = False, dehyphenate: bool = False,
+        hocr_in: os.PathLike[str] | str, case_insensitive: bool = False, spaces: bool = False, dehyphenate: bool = False,
         max_hits: int = 10
 ) -> Generator[str, None, None]:
     doc = html.parse(hocr_in)
-    text = doc.find('//body').text_content().strip()
+    body = doc.find('//body')
+    assert text is not None
+    text = body.text_content().strip()
     if case_insensitive:
         text = text.lower()
     if dehyphenate:
