@@ -39,9 +39,15 @@ setup(
     ],
     extras_require={
         'dev': [
+            # Tests.
             'beautifulsoup4',
             'requests',
             'importlib-resources; python_version<"3.10"',
+            # Linting.
+            'flake8',
+            'flake8-bugbear',
+            'pep8-naming',
+            # Typing.
             'mypy',
         ],
     },
