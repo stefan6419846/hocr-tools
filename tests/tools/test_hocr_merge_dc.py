@@ -7,7 +7,7 @@ from tests import TestCase
 
 
 class HocrMergeDcTestCase(TestCase):
-    def test_merge_dc(self):
+    def test_merge_dc(self) -> None:
         sample_html = self.get_data_file('sample.html')
         dcsample_xml = self.get_data_file('hocr_merge_dc/dcsample2.xml')
 
@@ -27,7 +27,7 @@ class HocrMergeDcTestCase(TestCase):
             merged
         )
 
-    def test_main(self):
+    def test_main(self) -> None:
         sample_html = self.get_data_file('sample.html')
         dcsample_xml = self.get_data_file('hocr_merge_dc/dcsample2.xml')
 
