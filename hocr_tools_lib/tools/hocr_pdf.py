@@ -161,7 +161,7 @@ CMGjwvxTsr74/f/F95m3TH9x8o0/TU//N+7/D/ScVcA=
 """.encode('latin1')
     uncompressed = bytearray(zlib.decompress(base64.b64decode(font)))
     ttf = io.BytesIO(uncompressed)
-    setattr(ttf, "name", "(invisible.ttf)")
+    ttf.name = "(invisible.ttf)"
     pdfmetrics.registerFont(TTFont('invisible', ttf))
 
 
