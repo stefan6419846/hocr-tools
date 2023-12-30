@@ -68,9 +68,9 @@ def evaluate_geometries(
     pages = zip(truth_pages, actual_pages)
 
     # Compute statistics.
-    for truth, actual in pages:
-        tobjs = truth.xpath(f"//*[@class='{element}']")
-        aobjs = actual.xpath(f"//*[@class='{element}']")
+    for truth_page, actual_page in pages:
+        tobjs = truth_page.xpath(f"//*[@class='{element}']")
+        aobjs = actual_page.xpath(f"//*[@class='{element}']")
         tboxes = [get_bbox(n) for n in tobjs]
         if check_bad_partition(tboxes, significant_overlap):
             raise ValueError(
