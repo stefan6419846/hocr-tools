@@ -1,4 +1,7 @@
+from __future__ import annotations
+
 import argparse
+import os
 import re
 
 from lxml import etree, html
@@ -13,7 +16,7 @@ DC_KNOWN = [
 ]
 
 
-def merge_dc(dc, hocr):
+def merge_dc(dc: os.PathLike[str], hocr: os.PathLike[str]) -> bytes:
     dc_doc = etree.parse(dc, html.XHTMLParser())
     hocr_doc = html.parse(hocr)
 
@@ -49,7 +52,7 @@ def merge_dc(dc, hocr):
     return etree.tostring(hocr_doc, pretty_print=True)
 
 
-def main():
+def main() -> None:
     parser = argparse.ArgumentParser(
         description="merge Dublin Core metadata into hOCR header files"
     )
