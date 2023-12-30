@@ -1,14 +1,19 @@
+from __future__ import annotations
+
 import sys
 import re
 import argparse
+from typing import Generator
 
 from lxml import html
 
+from hocr_tools_lib.utils.typing_utils import SupportsRead
+
 
 def word_frequencies(
-        hocr_in, case_insensitive=False, spaces=False, dehyphenate=False,
-        max_hits=10
-):
+        hocr_in: SupportsRead[str], case_insensitive: bool = False, spaces: bool = False, dehyphenate: bool = False,
+        max_hits: int = 10
+) -> Generator[str, None, None]:
     doc = html.parse(hocr_in)
     text = doc.find('//body').text_content().strip()
     if case_insensitive:
@@ -37,7 +42,7 @@ def word_frequencies(
         yield f"{word_counts[word]:<5d}\t{word}"
 
 
-def main():
+def main() -> None:
     parser = argparse.ArgumentParser(
         description='Calculate word frequency in an hOCR file'
     )
