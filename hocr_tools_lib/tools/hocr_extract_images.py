@@ -15,11 +15,10 @@ from lxml import html
 from PIL import Image
 
 from hocr_tools_lib.utils.node_utils import get_prop, get_text
-from hocr_tools_lib.utils.typing_utils import SupportsRead
 
 
 def extract_images(
-        hocr: SupportsRead[str], basename: str, pattern: str = "line-%03d.png", element: str = "ocr_line",
+        hocr: os.PathLike[str] | str, basename: str, pattern: str = "line-%03d.png", element: str = "ocr_line",
         pad: str | None = None, unicode_dammit: bool = False
 ) -> None:
     padding = None
