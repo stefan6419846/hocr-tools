@@ -2,21 +2,25 @@
 Extract the text within all the ocr_line elements within the hOCR file.
 """
 
+from __future__ import annotations
+
 import argparse
+import os
 import re
 import sys
+from typing import Generator
 
 from lxml import html
 
 
-def lines(hocr):
+def lines(hocr: os.PathLike[str]) -> Generator[str, None, None]:
     doc = html.parse(hocr)
 
     for line in doc.xpath("//*[@class='ocr_line']"):
         yield re.sub(r'\s+', '\x20', line.text_content()).strip()
 
 
-def main():
+def main() -> None:
     parser = argparse.ArgumentParser(
         description=(
             'extract the text within all the ocr_line elements '
