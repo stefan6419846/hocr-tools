@@ -59,8 +59,8 @@ def evaluate(
     ocr_errors = 0
 
     for truth, actual in pages:
-        true_lines = truth_doc.xpath("//*[@class='ocr_line']")
-        actual_lines = actual_doc.xpath("//*[@class='ocr_line']")
+        true_lines = truth.xpath("//*[@class='ocr_line']")
+        actual_lines = actual.xpath("//*[@class='ocr_line']")
         tx = [
             min(HPIX, (100 - HTOL) * width(get_bbox(line)) / 100)
             for line in true_lines
