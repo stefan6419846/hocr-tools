@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import contextlib
 from io import StringIO
 from unittest import mock
@@ -7,7 +9,7 @@ from tests import TestCase
 
 
 class HocrLinesTestCase(TestCase):
-    def test_lines(self):
+    def test_lines(self) -> None:
         filename = self.get_data_file('tess.hocr')
         lines = list(hocr_lines.lines(filename))
 
@@ -17,7 +19,7 @@ class HocrLinesTestCase(TestCase):
             lines[0]
         )
 
-    def test_main(self):
+    def test_main(self) -> None:
         filename = self.get_data_file('tess.hocr')
         stdout = StringIO()
         with mock.patch('sys.argv', ['hocr-lines', filename]):
