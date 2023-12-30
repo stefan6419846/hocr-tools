@@ -1,35 +1,53 @@
+from __future__ import annotations
+
 import argparse
+import os
+from dataclasses import dataclass
+from typing import Generator
 
 from lxml import html
 
 from hocr_tools_lib.utils.node_utils import get_bbox
-from hocr_tools_lib.utils.rectangle_utils import overlaps, relative_overlap
+from hocr_tools_lib.utils.rectangle_utils import overlaps, relative_overlap, RectangleType
 
 
-def boxstats(truths, actuals, significant_overlap=0.1, close_match=0.9):
-    multiple = 0
-    missing = 0
-    error = 0
-    count = 0
+@dataclass
+class Boxstats:
+    multiple: int = 0
+    missing: int = 0
+    error: float = 0.0
+    count: int = 0
+
+    def to_tuple(self) -> tuple[int, int, float, int]:
+        return (self.multiple, self.missing, self.error, self.count)
+
+
+def boxstats(
+        truths: list[RectangleType | None],
+        actuals: list[RectangleType | None],
+        significant_overlap: float = 0.1,
+        close_match: float = 0.9
+) -> Boxstats:
+    result = Boxstats()
     for t in truths:
         overlapping = [a for a in actuals if overlaps(a, t)]
         oas = [relative_overlap(t, a) for a in overlapping]
         if len([o for o in oas if o > significant_overlap]) > 1:
-            multiple += 1
+            result.multiple += 1
         matching = [o for o in oas if o > close_match]
         if len(matching) < 1:
-            missing += 1
+            result.missing += 1
         elif len(matching) > 1:
             raise AttributeError(
                 "Multiple close matches: your segmentation files are bad"
             )
         else:
-            error += 1.0 - matching[0]
-            count += 1
-    return multiple, missing, error, count
+            result.error += 1.0 - matching[0]
+            result.count += 1
+    return result
 
 
-def check_bad_partition(boxes, significant_overlap=0.1):
+def check_bad_partition(boxes: list[RectangleType | None], significant_overlap: float = 0.1) -> bool:
     for i in range(len(boxes)):
         for j in range(i + 1, len(boxes)):
             if relative_overlap(boxes[i], boxes[j]) > significant_overlap:
@@ -38,9 +56,9 @@ def check_bad_partition(boxes, significant_overlap=0.1):
 
 
 def evaluate_geometries(
-        truth, actual, element='ocr_line',
-        significant_overlap=0.1, close_match=0.9
-):
+        truth: os.PathLike[str], actual: os.PathLike[str], element: str = 'ocr_line',
+        significant_overlap: float = 0.1, close_match: float = 0.9
+) -> Generator[tuple[Boxstats, Boxstats], None, None]:
     # Read the hOCR files.
     truth_doc = html.parse(truth)
     actual_doc = html.parse(actual)
@@ -51,8 +69,8 @@ def evaluate_geometries(
 
     # Compute statistics.
     for truth, actual in pages:
-        tobjs = truth.xpath(f"//*[@class='{element}']")
-        aobjs = actual.xpath(f"//*[@class='{element}']")
+        tobjs = truth_doc.xpath(f"//*[@class='{element}']")
+        aobjs = actual_doc.xpath(f"//*[@class='{element}']")
         tboxes = [get_bbox(n) for n in tobjs]
         if check_bad_partition(tboxes, significant_overlap):
             raise ValueError(
@@ -67,7 +85,7 @@ def evaluate_geometries(
         )
 
 
-def main():
+def main() -> None:
     parser = argparse.ArgumentParser(
         description=(
             "Compute statistics about the quality of the geometric "
@@ -118,7 +136,7 @@ def main():
 
     for result in results:
         truth_stats, actual_stats = result
-        print(truth_stats, actual_stats)
+        print(truth_stats.to_tuple(), actual_stats.to_tuple())
 
     args.truth.close()
     args.actual.close()
