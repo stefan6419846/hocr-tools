@@ -11,7 +11,7 @@ import re
 import sys
 import xml.sax
 from dataclasses import dataclass
-from typing import Any, Callable
+from typing import cast, Any, Callable
 
 from PIL import Image
 
@@ -74,7 +74,7 @@ def extract_g1000(hocr: str, image_pattern: str, output_prefix: str) -> None:
             image_list=get_image_list(image_pattern),
             configuration=configuration
         )
-        parser.setContentHandler(handler)  # type: ignore[no-untyped-call]
+        parser.setContentHandler(handler)
         parser.parse(stream)  # type: ignore[no-untyped-call]
 
 
@@ -148,8 +148,8 @@ def check_dict(dictionary: dict[str, Any], s: str) -> bool:
     return True
 
 
-def write_string(filename: str, text: str):
-    with open(filename, "w") as stream:
+def write_string(filename: str, text: str) -> None:
+    with open(filename, "wb") as stream:
         stream.write(text.encode("utf-8"))
 
 
@@ -162,7 +162,7 @@ class DocumentHandler(xml.sax.handler.ContentHandler):
         self.configuration = configuration
         self.output_pattern = output_pattern
 
-    def startDocument(self) -> None:  # noqa: N802
+    def startDocument(self) -> None:  # noqa: N802  # type: ignore[override]
         self.total = 0
         self.pageno = -1
         self.text = ""
@@ -182,8 +182,11 @@ class DocumentHandler(xml.sax.handler.ContentHandler):
             self.image = Image.open(self.page)
         if attrs.get("class", "") == self.element:
             self.lineno += 1
-            props = attrs.get("title", "")
-            self.bbox = get_prop(props, "bbox")
+            props = attrs.get("title", None)
+            if props is not None:
+                self.bbox = get_prop(props, "bbox")
+            else:
+                self.bbox = None
             self.start = self.depth
             self.text = ""
 
@@ -192,7 +195,7 @@ class DocumentHandler(xml.sax.handler.ContentHandler):
             if self.configuration.min_len <= len(self.text) <= \
                     self.configuration.max_len and \
                     re.match(self.regex, self.text) and \
-                    check_dict(self.configuration.dict_data, self.text):
+                    check_dict(cast(dict[str, Any], self.configuration.dict_data), self.text):
                 print(self.page, self.bbox, self.text.encode("utf-8"))
                 w, h = self.image.size
                 assert self.bbox
