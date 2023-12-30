@@ -18,7 +18,7 @@ def get_prop(node: HtmlElement, name: str, strip_value: bool = False) -> str | N
         if strip_value:
             args = args.strip('"')
         if key == name:
-            return cast(str, args)
+            return args
     return None
 
 
