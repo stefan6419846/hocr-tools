@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import atexit
 import shutil
 import sys
@@ -13,7 +15,7 @@ else:
 
 class TestCase(_TestCase):
     @classmethod
-    def get_data_file(cls, path):
+    def get_data_file(cls, path: str) -> str:
         file_manager = ExitStack()
         atexit.register(file_manager.close)
         reference = importlib_resources.files('tests.data') / path
@@ -22,17 +24,17 @@ class TestCase(_TestCase):
         ))
 
     @classmethod
-    def get_data_content(cls, path):
+    def get_data_content(cls, path: str) -> bytes:
         reference = importlib_resources.files('tests.data') / path
         return reference.read_bytes()
 
     @classmethod
-    def get_data_directory(cls):
+    def get_data_directory(cls) -> Path:
         first_file = next(importlib_resources.files('tests.data').iterdir())
         return Path(cls.get_data_file(first_file.name)).parent
 
     @classmethod
-    def get_data_file_copy(cls, path, directory):
+    def get_data_file_copy(cls, path: str, directory: str | Path) -> Path:
         directory = Path(directory)
         source = Path(cls.get_data_file(path))
         target = directory / source.name
@@ -44,17 +46,18 @@ if sys.version_info < (3, 11):  # pragma: no cover
     # Backport new functionality.
     import contextlib
     import os
+    from typing import Any
 
     class chdir(contextlib.AbstractContextManager):  # noqa: N801
-        def __init__(self, path):
+        def __init__(self, path: os.PathLike[str | bytes]) -> None:
             self.path = path
             self._old_cwd = []
 
-        def __enter__(self):
+        def __enter__(self) -> None:
             self._old_cwd.append(os.getcwd())
             os.chdir(self.path)
 
-        def __exit__(self, *excinfo):
+        def __exit__(self, *excinfo: Any) -> None:
             os.chdir(self._old_cwd.pop())
 else:  # pragma: no cover
     from contextlib import chdir  # noqa: F401
