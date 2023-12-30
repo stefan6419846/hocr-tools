@@ -173,7 +173,7 @@ class DocumentHandler(xml.sax.handler.ContentHandler):
     def endDocument(self) -> None:  # noqa: N802
         pass
 
-    def startElement(self, name: str, attrs: dict[str, str]) -> None:  # noqa: N802
+    def startElement(self, name: str, attrs: dict[str, str]) -> None:  # noqa: N802  # type: ignore[override]
         self.depth += 1
         if attrs.get("class", "") == "ocr_page":
             self.lineno = -1
@@ -182,9 +182,9 @@ class DocumentHandler(xml.sax.handler.ContentHandler):
             self.image = Image.open(self.page)
         if attrs.get("class", "") == self.element:
             self.lineno += 1
-            props = attrs.get("title", None)
+            props:  = attrs.get("title", None)
             if props is not None:
-                self.bbox = get_prop(props, "bbox")
+                self.bbox = get_prop(props, "bbox")  # type: ignore[arg-type]  # FIXME
             else:
                 self.bbox = None
             self.start = self.depth
