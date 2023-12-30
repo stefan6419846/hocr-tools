@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import argparse
 import logging
 import os
@@ -13,7 +15,7 @@ logger = logging.getLogger(__name__)
 del logging
 
 
-def cut(hocr, debug=False):
+def cut(hocr: os.PathLike[str], debug: bool = False) -> None:
     doc = html.parse(hocr)
 
     pages = doc.xpath("//*[@class='ocr_page']")
@@ -32,12 +34,14 @@ def cut(hocr, debug=False):
             image_found = False
 
         bbox = get_bbox(page)
+        assert bbox is not None
         middle = bbox[2] / 2
 
         left_ends = []
         right_starts = []
         for line in doc.xpath("//*[@class='ocr_line']"):
             b = get_bbox(line)
+            assert b is not None
             if b[0] > middle:
                 pos = "right"
             elif b[2] < middle:
@@ -101,7 +105,7 @@ def cut(hocr, debug=False):
             logger.info("Right page is saved in %s", right_name)
 
 
-def main():
+def main() -> None:
     parser = argparse.ArgumentParser(
         description=(
             'Cut a page (horizontally) into two pages in the middle '
