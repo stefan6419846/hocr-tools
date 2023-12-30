@@ -29,10 +29,10 @@ import sys
 import zlib
 from typing import Any
 
-from bidi.algorithm import get_display
-from reportlab.pdfbase import pdfmetrics
-from reportlab.pdfbase.ttfonts import TTFont
-from reportlab.pdfgen.canvas import Canvas
+from bidi.algorithm import get_display  # type: ignore[import-untyped]
+from reportlab.pdfbase import pdfmetrics  # type: ignore[import-untyped]
+from reportlab.pdfbase.ttfonts import TTFont  # type: ignore[import-untyped]
+from reportlab.pdfgen.canvas import Canvas  # type: ignore[import-untyped]
 
 from lxml import etree, html
 from PIL import Image
@@ -87,7 +87,7 @@ def export_pdf(directory: str, default_dpi: int = 300, savefile: str | None = No
     pdf.save()
 
 
-def add_text_layer(pdf: Canvas, image: Image.Image, height: int, dpi: int):
+def add_text_layer(pdf: Canvas, image: str, height: float, dpi: int) -> None:
     """
     Draw an invisible text layer for OCR data.
     """
@@ -96,9 +96,13 @@ def add_text_layer(pdf: Canvas, image: Image.Image, height: int, dpi: int):
     hocr_file = os.path.splitext(image)[0] + ".hocr"
     hocr = etree.parse(hocr_file, html.XHTMLParser())
     for line in hocr.xpath('//*[@class="ocr_line"]'):
-        line_box = p1.search(line.attrib['title']).group(1).split()
+        line_box_match = p1.search(line.attrib['title'])
+        assert line_box_match is not None
+        line_box = line_box_match.group(1).split()
         try:
-            baseline = p2.search(line.attrib['title']).group(1).split()
+            baseline_match = p2.search(line.attrib['title'])
+            assert baseline_match is not None
+            baseline = baseline_match.group(1).split()
         except AttributeError:
             baseline = [0, 0]
         line_box = [float(i) for i in line_box]
@@ -115,8 +119,10 @@ def add_text_layer(pdf: Canvas, image: Image.Image, height: int, dpi: int):
             font_width = pdf.stringWidth(rawtext, 'invisible', 8)
             if font_width <= 0:
                 continue
-            box = p1.search(word.attrib['title']).group(1).split()
-            box = [float(i) for i in box]
+            box_match = p1.search(word.attrib['title'])
+            assert box_match is not None
+            box_str = box_match.group(1).split()
+            box: list[float] = [float(i) for i in box]
             b = polyval(
                 baseline,
                 (box[0] + box[2]) / 2 - line_box[0]
