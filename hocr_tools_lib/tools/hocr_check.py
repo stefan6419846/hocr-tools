@@ -10,6 +10,7 @@ import argparse
 import sys
 from os import PathLike
 
+from etree import _ElementTree
 from lxml import html
 
 from hocr_tools_lib.utils.node_utils import get_bbox, get_prop
@@ -26,7 +27,7 @@ class Checker:
         """
         self.test_counter = 0
         self.no_overlap = no_overlap
-        self.doc: html.HtmlElement = html.parse(hocr_file)
+        self.doc: _ElementTree[html.HtmlElement] = html.parse(hocr_file)
 
     def test_ok(self, v: bool, msg: str) -> None:
         self.test_counter += 1
