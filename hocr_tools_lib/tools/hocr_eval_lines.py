@@ -1,18 +1,26 @@
+from __future__ import annotations
+
 import argparse
 import logging
+import os
 
 from lxml import html
 
 from hocr_tools_lib.utils.edit_utils import edit_distance
 from hocr_tools_lib.utils.node_utils import get_text
 from hocr_tools_lib.utils.text_utils import normalize
+from hocr_tools_lib.utils.typing_utils import SupportsRead
 
 
 logger = logging.getLogger(__name__)
 del logging
 
 
-def evaluate_lines(tfile, hfile, verbose=False):
+def evaluate_lines(
+        tfile: SupportsRead[str],
+        hfile: os.PathLike[str],
+        verbose: bool = False
+) -> tuple[int, int]:
     truth_lines = tfile.read().split('\n')
     actual_doc = html.parse(hfile)
     actual_lines = [
@@ -50,7 +58,7 @@ def evaluate_lines(tfile, hfile, verbose=False):
     return segmentation_errors, ocr_errors
 
 
-def main():
+def main() -> None:
     parser = argparse.ArgumentParser(
         description=(
             "Compute statistics about the quality of the geometric "
