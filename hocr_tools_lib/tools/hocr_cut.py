@@ -22,6 +22,7 @@ def cut(hocr: os.PathLike[str], debug: bool = False) -> None:
 
     for page in pages:
         filename = get_prop(page, 'image')
+        assert filename is not None
         filename = os.path.join(os.path.dirname(hocr), filename)
         try:
             image = Image.open(filename)
