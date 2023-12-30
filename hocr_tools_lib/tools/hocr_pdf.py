@@ -122,7 +122,7 @@ def add_text_layer(pdf: Canvas, image: str, height: float, dpi: int) -> None:
             box_match = p1.search(word.attrib['title'])
             assert box_match is not None
             box_str = box_match.group(1).split()
-            box: list[float] = [float(i) for i in box]
+            box: list[float] = [float(i) for i in box_str]
             b = polyval(
                 baseline,
                 (box[0] + box[2]) / 2 - line_box[0]
