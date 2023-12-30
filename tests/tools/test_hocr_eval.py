@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import contextlib
 import subprocess
 from io import StringIO
@@ -8,14 +10,14 @@ from tests import TestCase
 
 
 class HocrEvalTestCase(TestCase):
-    def test_with_self(self):
+    def test_with_self(self) -> None:
         filename = self.get_data_file('sample.html')
         subprocess.check_call(
             ['hocr-eval', filename, filename], stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
         )
 
-    def test_verbose_and_debug_mode(self):
+    def test_verbose_and_debug_mode(self) -> None:
         tess_hocr = self.get_data_file('tess.hocr')
         sample_html = self.get_data_file('sample.html')
         subprocess.check_call(
@@ -23,7 +25,7 @@ class HocrEvalTestCase(TestCase):
             stdout=subprocess.PIPE, stderr=subprocess.PIPE,
         )
 
-    def test_main(self):
+    def test_main(self) -> None:
         tess_hocr = self.get_data_file('tess.hocr')
         sample_html = self.get_data_file('sample.html')
 
