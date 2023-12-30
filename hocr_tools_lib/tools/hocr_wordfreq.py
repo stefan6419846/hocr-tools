@@ -15,7 +15,7 @@ def word_frequencies(
 ) -> Generator[str, None, None]:
     doc = html.parse(hocr_in)
     body = doc.find('//body')
-    assert text is not None
+    assert body is not None
     text = body.text_content().strip()
     if case_insensitive:
         text = text.lower()
