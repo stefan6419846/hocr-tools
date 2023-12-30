@@ -51,6 +51,7 @@ setup(
             'mypy',
             'types-beautifulsoup4',
             'types-html5lib',
+            'types-lxml',
             'types-Pillow',
             'types-requests',
         ],
