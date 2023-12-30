@@ -31,7 +31,7 @@ def evaluate(
         img_file: SupportsRead[bytes] | None,
         debug: bool = False,
         verbose: bool = False
-) -> tuple[Image.Image | None, int, int, int]
+) -> tuple[Image.Image | None, int, int, int]:
     if img_file:
         im = Image.open(img_file)
         logger.info(
