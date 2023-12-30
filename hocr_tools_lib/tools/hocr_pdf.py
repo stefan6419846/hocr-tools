@@ -17,6 +17,8 @@ Create a searchable PDF from a pile of hOCr + JPEG. Tested with
 Tesseract.
 """
 
+from __future__ import annotations
+
 import argparse
 import base64
 import glob
@@ -25,6 +27,7 @@ import os
 import re
 import sys
 import zlib
+from typing import Any
 
 from bidi.algorithm import get_display
 from reportlab.pdfbase import pdfmetrics
@@ -42,8 +45,8 @@ class StdoutWrapper:
     the invisible font to be injected as bytes but written out as a string.
     """
 
-    def write(self, data, *args, **kwargs):
-        if bytes != str and isinstance(data, bytes):
+    def write(self, data: str | bytes, *args: Any, **kwargs: Any) -> None:
+        if isinstance(data, bytes):
             data = data.decode('latin1')
         sys.stdout.write(data)
 
@@ -52,7 +55,7 @@ class NoImagesFoundError(RuntimeError):
     pass
 
 
-def export_pdf(directory, default_dpi=300, savefile=None):
+def export_pdf(directory: str, default_dpi: int = 300, savefile: str | None = None) -> None:
     """
     Create a searchable PDF from a pile of HOCR + JPEG.
     """
@@ -84,7 +87,7 @@ def export_pdf(directory, default_dpi=300, savefile=None):
     pdf.save()
 
 
-def add_text_layer(pdf, image, height, dpi):
+def add_text_layer(pdf: Canvas, image: Image.Image, height: int, dpi: int):
     """
     Draw an invisible text layer for OCR data.
     """
@@ -129,14 +132,14 @@ def add_text_layer(pdf, image, height, dpi):
             pdf.drawText(text)
 
 
-def polyval(poly, x):
+def polyval(poly: list[float], x: float) -> float:
     return x * poly[0] + poly[1]
 
 
 # Glyphless variation of vedaal's invisible font retrieved from
 # http://www.angelfire.com/pr/pgpf/if.html, which says:
 # 'Invisible font' is unrestricted freeware. Enjoy, Improve, Distribute freely
-def load_invisible_font():
+def load_invisible_font() -> None:
     font = """
 eJzdlk1sG0UUx/+zs3btNEmrUKpCPxikSqRS4jpfFURUagmkEQQoiRXgAl07Y3vL2mvt2ml8APXG
 hQPiUEGEVDhWVHyIC1REPSAhBOWA+BCgSoULUqsKcWhVBKjhzfPU+VCi3Flrdn7vzZv33ryZ3TUE
@@ -165,7 +168,7 @@ CMGjwvxTsr74/f/F95m3TH9x8o0/TU//N+7/D/ScVcA=
     pdfmetrics.registerFont(TTFont('invisible', ttf))
 
 
-def main():
+def main() -> None:
     parser = argparse.ArgumentParser(
         description="Create a searchable PDF from a pile of hOCR and JPEG"
     )
