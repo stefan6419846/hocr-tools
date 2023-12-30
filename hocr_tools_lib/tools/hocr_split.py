@@ -9,10 +9,8 @@ import re
 
 from lxml import etree, html
 
-from hocr_tools_lib.utils.typing_utils import SupportsRead
 
-
-def split(hocr: SupportsRead[str], pattern: str) -> None:
+def split(hocr: PathLike[str] | str, pattern: str) -> None:
     assert re.search('%[0-9]*d', pattern)
 
     doc = etree.parse(hocr, html.XHTMLParser())
