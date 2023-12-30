@@ -3,7 +3,7 @@ from __future__ import annotations
 import sys
 import re
 import argparse
-from typing import Generator
+from typing import cast, Callable, Generator
 
 from lxml import html
 
@@ -25,7 +25,7 @@ def word_frequencies(
         text = re.sub(r"-\r?\n", "", text)
         # Replace line breaks with a space.
         text = re.sub(r"\r?\n", " ", text)
-    word_counts = {}
+    word_counts: dict[str, int] = {}
     separators = re.compile(r'\W+', re.UNICODE)
     if spaces:
         separators = re.compile(r'\s+', re.UNICODE)
@@ -35,7 +35,7 @@ def word_frequencies(
         word_counts[word] = word_counts[word] + 1 if word in word_counts else 1
 
     for idx, word in enumerate(
-            sorted(word_counts, reverse=True, key=word_counts.get)
+            sorted(word_counts, reverse=True, key=cast(Callable[[str], int], word_counts.get))
     ):
         if idx > max_hits:
             break
