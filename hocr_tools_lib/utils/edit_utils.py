@@ -1,4 +1,7 @@
-def edit_distance(a, b, threshold=99999):
+from __future__ import annotations
+
+
+def edit_distance(a: str, b: str, threshold: int = 99999) -> int:
     if a == b:
         return 0
     m = len(a)
@@ -32,5 +35,5 @@ def edit_distance(a, b, threshold=99999):
 #     return text_plain
 
 
-def remove_tex(text):
+def remove_tex(text: str) -> str:
     return text
