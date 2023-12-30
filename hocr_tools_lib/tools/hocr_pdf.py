@@ -98,15 +98,15 @@ def add_text_layer(pdf: Canvas, image: str, height: float, dpi: int) -> None:
     for line in hocr.xpath('//*[@class="ocr_line"]'):
         line_box_match = p1.search(line.attrib['title'])
         assert line_box_match is not None
-        line_box = line_box_match.group(1).split()
+        line_box_str = line_box_match.group(1).split()
         try:
             baseline_match = p2.search(line.attrib['title'])
             assert baseline_match is not None
-            baseline = baseline_match.group(1).split()
+            baseline_str = baseline_match.group(1).split()
         except AttributeError:
             baseline = [0, 0]
-        line_box = [float(i) for i in line_box]
-        baseline = [float(i) for i in baseline]
+        line_box: list[float] = [float(i) for i in line_box_str]
+        baseline: list[float] = [float(i) for i in baseline_str]
         xpath_elements = './/*[@class="ocrx_word"]'
         if not (line.xpath('boolean(' + xpath_elements + ')')):
             # If there are no words elements present, we switch to lines
