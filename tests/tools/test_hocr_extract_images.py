@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import subprocess
 from tempfile import TemporaryDirectory
 from unittest import mock
@@ -7,7 +9,7 @@ from tests import chdir, TestCase
 
 
 class HocrExtractImagesTestCase(TestCase):
-    def _check(self, level, basename, expected_count, stdin, extra_args=''):
+    def _check(self, level: str, basename: str, expected_count: int, stdin: bool, extra_args: str = '') -> None:
         with TemporaryDirectory() as directory:
             tess_hocr = self.get_data_file_copy('tess.hocr', directory)
             self.get_data_file_copy('alice_1.png', directory)
@@ -37,7 +39,7 @@ class HocrExtractImagesTestCase(TestCase):
             ]
             self.assertEqual(expected_count, len(txt_files), txt_files)
 
-    def test_result_file_count(self):
+    def test_result_file_count(self) -> None:
         for level, basename, expected_count in [
                 ('ocr_page', 'page', 1),
                 ('ocr_line', 'line', 37),
@@ -57,7 +59,7 @@ class HocrExtractImagesTestCase(TestCase):
                     stdin=True
                 )
 
-    def test_unicode_dammit(self):
+    def test_unicode_dammit(self) -> None:
         filename = self.get_data_file('sample.txt')
         stdout = subprocess.check_output(
             ['wc', '-w', filename]
@@ -71,7 +73,7 @@ class HocrExtractImagesTestCase(TestCase):
                     extra_args='', stdin=stdin,
                 )
 
-    def test_main(self):
+    def test_main(self) -> None:
         with TemporaryDirectory() as directory:
             tess_hocr = self.get_data_file_copy('tess.hocr', directory)
             self.get_data_file_copy('alice_1.png', directory)
