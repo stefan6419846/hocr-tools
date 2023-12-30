@@ -182,7 +182,7 @@ class DocumentHandler(xml.sax.handler.ContentHandler):
             self.image = Image.open(self.page)
         if attrs.get("class", "") == self.element:
             self.lineno += 1
-            props:  = attrs.get("title", None)
+            props = attrs.get("title", None)
             if props is not None:
                 self.bbox = get_prop(props, "bbox")  # type: ignore[arg-type]  # FIXME
             else:
