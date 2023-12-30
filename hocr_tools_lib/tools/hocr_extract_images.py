@@ -7,7 +7,6 @@ from __future__ import annotations
 
 import argparse
 import ast
-import os
 import sys
 from typing import cast
 
@@ -15,10 +14,11 @@ from lxml import html
 from PIL import Image
 
 from hocr_tools_lib.utils.node_utils import get_prop, get_text
+from hocr_tools_lib.utils.typing_utils import SupportsReadClose
 
 
 def extract_images(
-        hocr: os.PathLike[str] | str, basename: str, pattern: str = "line-%03d.png", element: str = "ocr_line",
+        hocr: SupportsReadClose, basename: str, pattern: str = "line-%03d.png", element: str = "ocr_line",
         pad: str | None = None, unicode_dammit: bool = False
 ) -> None:
     padding = None
@@ -39,6 +39,7 @@ def extract_images(
         parser = html.HTMLParser(encoding=doc.original_encoding)
         doc = html.document_fromstring(content.encode('UTF-8'), parser=parser)
     else:
+        assert isinstance(hocr, (str, bytes, Support)), type(hocr)
         doc = html.parse(hocr)
 
     pages = doc.xpath('//*[@class="ocr_page"]')
