@@ -11,7 +11,6 @@ import re
 import sys
 import xml.sax
 from dataclasses import dataclass
-from pathlib import Path
 from typing import Any, Callable
 
 from PIL import Image
