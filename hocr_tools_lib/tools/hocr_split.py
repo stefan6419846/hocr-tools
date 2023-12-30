@@ -6,6 +6,7 @@ from __future__ import annotations
 
 import argparse
 import re
+from os import PathLike
 
 from lxml import etree, html
 
