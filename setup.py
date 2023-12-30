@@ -49,6 +49,10 @@ setup(
             'pep8-naming',
             # Typing.
             'mypy',
+            'types-beautifulsoup4',
+            'types-html5lib',
+            'types-Pillow',
+            'types-requests',
         ],
     },
     packages=find_packages(
