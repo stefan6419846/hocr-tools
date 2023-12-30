@@ -10,6 +10,10 @@ except ImportError:
         def read(self, __length: int = ...) -> _T_co:
             ...
 
+    class SupportsReadClose(SupportsRead[_T_co], Protocol[_T_co]):  # type: ignore[no-redef]
+        def close(self) -> None:
+            ...
+
 
 __all__ = [
     "SupportsRead",
