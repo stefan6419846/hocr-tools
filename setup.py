@@ -42,6 +42,7 @@ setup(
             'beautifulsoup4',
             'requests',
             'importlib-resources; python_version<"3.10"',
+            'mypy',
         ],
     },
     packages=find_packages(
