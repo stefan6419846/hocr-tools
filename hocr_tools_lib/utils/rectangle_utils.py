@@ -1,54 +1,79 @@
-def intersect(u, v):
+from __future__ import annotations
+
+from typing import cast
+
+
+RectangleType = tuple[float, float, float, float]
+
+
+def intersect(u: RectangleType | None, v: RectangleType | None) -> RectangleType | None:
     """
     Intersection of two rectangles.
     """
+    if u is None or v is None:
+        return None
     r = (max(u[0], v[0]), max(u[1], v[1]), min(u[2], v[2]), min(u[3], v[3]))
     return r
 
 
-def area(u):
+def area(u: RectangleType | None) -> float:
     """
     Area of a rectangle.
     """
+    if u is None:
+        return 0
     return max(0, u[2] - u[0]) * max(0, u[3] - u[1])
 
 
-def overlaps(u, v):
+def overlaps(u: RectangleType | None, v: RectangleType | None) -> bool:
     """
     Predicate: Do the two rectangles overlap?
     """
     return area(intersect(u, v)) > 0
 
 
-def relative_overlap(u, v):
+def relative_overlap(u: RectangleType | None, v: RectangleType | None) -> float:
     m = max(area(u), area(v))
     i = area(intersect(u, v))
     return float(i) / m
 
 
-def mostly_non_overlapping(boxes, significant_overlap=0.2):
+def mostly_non_overlapping(
+        boxes: list[RectangleType | None],
+        significant_overlap: float = 0.2
+) -> bool:
     for i in range(len(boxes)):
         for j in range(i + 1, len(boxes)):
             if relative_overlap(boxes[i], boxes[j]) > significant_overlap:
-                return 0
-    return 1
+                return False
+    return True
 
 
-def width(u):
+def width(u: RectangleType | None) -> float:
     """
     Width of a rectangle.
     """
+    if u is None:
+        return 0
     return max(0, u[2] - u[0])
 
 
-def height(u):
+def height(u: RectangleType | None) -> float:
     """
     Height of a rectangle.
     """
+    if u is None:
+        return 0
     return max(0, u[3] - u[1])
 
 
-def erode(u, tx, ty):
+def erode(u: RectangleType | None, tx: float, ty: float) -> RectangleType | None:
+    if u is None:
+        return u
+
     x = 2 * tx + 1
     y = 2 * ty + 1
-    return tuple([u[0] + x, u[1] + y, u[2] - x, u[3] - y])
+    return cast(
+        RectangleType,
+        tuple([u[0] + x, u[1] + y, u[2] - x, u[3] - y])
+    )
