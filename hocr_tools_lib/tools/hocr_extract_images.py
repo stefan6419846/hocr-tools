@@ -39,7 +39,6 @@ def extract_images(
         parser = html.HTMLParser(encoding=doc.original_encoding)
         doc = html.document_fromstring(content.encode('UTF-8'), parser=parser)
     else:
-        assert isinstance(hocr, (str, bytes, Support)), type(hocr)
         doc = html.parse(hocr)
 
     pages = doc.xpath('//*[@class="ocr_page"]')
