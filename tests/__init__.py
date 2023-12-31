@@ -48,7 +48,7 @@ if sys.version_info < (3, 11):  # pragma: no cover
     import os
     from typing import Any
 
-    if sys.versin_info < (3, 9):
+    if sys.version_info < (3, 9):
         _SUPERCLASS = contextlib.AbstractContextManager
     else:
         _SUPERCLASS = contextlib.AbstractContextManager[None]
