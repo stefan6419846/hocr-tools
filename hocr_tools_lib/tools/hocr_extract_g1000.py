@@ -184,7 +184,7 @@ class DocumentHandler(xml.sax.handler.ContentHandler):
             self.lineno += 1
             props = attrs.get("title", None)
             if props is not None:
-                self.bbox = get_prop(props, "bbox")
+                self.bbox = get_prop(props, "bbox")  # type: ignore[arg-type]  # FIXME
             else:
                 self.bbox = None
             self.start = self.depth
