@@ -34,14 +34,14 @@ class HocrEvalLinesTestCase(TestCase):
         tess_hocr = self.get_data_file('tess.hocr')
         sample_txt = self.get_data_file('sample.txt')
 
-        stdout = StringIO()
+        stdout_io = StringIO()
         with mock.patch(
                 'sys.argv',
                 ['hocr-eval-lines', '-v', sample_txt, tess_hocr]
         ):
-            with contextlib.redirect_stdout(stdout):
+            with contextlib.redirect_stdout(stdout_io):
                 hocr_eval_lines.main()
-        stdout = stdout.getvalue()
+        stdout = stdout_io.getvalue()
 
         # Check whether detection of ocr_errors is correct.
         self.assertIn('ocr_errors 7\n', stdout)
