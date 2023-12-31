@@ -30,6 +30,7 @@ setup(
         'Topic :: Multimedia :: Graphics :: Graphics Conversion',
         'Topic :: Scientific/Engineering :: Image Recognition',
         'Topic :: Utilities',
+        'Typing :: Typed',
     ],
     install_requires=[
         'Pillow>=9.3.0',
