@@ -1,5 +1,7 @@
 # Development version
 
+* Add type hints.
+
 # Version 1.0.2 - 2023-12-29
 
 * Fix installation instructions.
