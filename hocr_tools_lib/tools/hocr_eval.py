@@ -1,5 +1,8 @@
+from __future__ import annotations
+
 import argparse
 import logging
+import os
 
 from lxml import html
 from PIL import Image, ImageDraw
@@ -9,6 +12,7 @@ from hocr_tools_lib.utils.node_utils import get_bbox, get_text
 from hocr_tools_lib.utils.rectangle_utils import area, erode, height, intersect, \
     width
 from hocr_tools_lib.utils.text_utils import normalize
+from hocr_tools_lib.utils.typing_utils import SupportsRead
 
 
 logger = logging.getLogger(__name__)
@@ -21,7 +25,13 @@ HPIX = 5
 VPIX = 5
 
 
-def evaluate(truth, actual, img_file, debug=False, verbose=False):
+def evaluate(
+        truth: os.PathLike[str],
+        actual: os.PathLike[str],
+        img_file: SupportsRead[bytes] | None,
+        debug: bool = False,
+        verbose: bool = False
+) -> tuple[Image.Image | None, int, int, int]:
     if img_file:
         im = Image.open(img_file)
         logger.info(
@@ -48,9 +58,9 @@ def evaluate(truth, actual, img_file, debug=False, verbose=False):
     segmentation_ocr_errors = 0
     ocr_errors = 0
 
-    for truth, actual in pages:
-        true_lines = truth.xpath("//*[@class='ocr_line']")
-        actual_lines = actual.xpath("//*[@class='ocr_line']")
+    for truth_page, actual_page in pages:
+        true_lines = truth_page.xpath("//*[@class='ocr_line']")
+        actual_lines = actual_page.xpath("//*[@class='ocr_line']")
         tx = [
             min(HPIX, (100 - HTOL) * width(get_bbox(line)) / 100)
             for line in true_lines
@@ -68,7 +78,7 @@ def evaluate(truth, actual, img_file, debug=False, verbose=False):
                     get_text(line)
                 ) for line in actual_lines
             ]
-            q = 0
+            q: float = 0
             tight_overlap = False
             if candidates:
                 q, actual_bbox, actual_line = max(candidates)
@@ -99,9 +109,9 @@ def evaluate(truth, actual, img_file, debug=False, verbose=False):
                 else:
                     segmentation_ocr_errors += len(get_text(true_line))
 
-                if img_file:
+                if img_file and bbox is not None:
                     draw.rectangle(bbox, outline="#ff0000")
-                    if candidates:
+                    if candidates and actual_bbox is not None:
                         draw.rectangle(actual_bbox, outline="#0000ff")
                 continue
             true_text = remove_tex(get_text(true_line))
@@ -117,14 +127,14 @@ def evaluate(truth, actual, img_file, debug=False, verbose=False):
                 logger.info("\t%s", actual_text)
             ocr_errors += error
 
-    if img_file:
+    if img_file and im is not None:
         im.save("errors.png")
         im.close()
 
     return im, segmentation_errors, segmentation_ocr_errors, ocr_errors
 
 
-def main():
+def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "truth", help="hOCR file with ground truth",

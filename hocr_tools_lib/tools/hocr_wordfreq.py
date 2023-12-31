@@ -1,16 +1,22 @@
+from __future__ import annotations
+
+import os
 import sys
 import re
 import argparse
+from typing import cast, Callable, Generator
 
 from lxml import html
 
 
 def word_frequencies(
-        hocr_in, case_insensitive=False, spaces=False, dehyphenate=False,
-        max_hits=10
-):
+        hocr_in: os.PathLike[str] | str, case_insensitive: bool = False, spaces: bool = False, dehyphenate: bool = False,
+        max_hits: int = 10
+) -> Generator[str, None, None]:
     doc = html.parse(hocr_in)
-    text = doc.find('//body').text_content().strip()
+    body = doc.find('//body')
+    assert body is not None
+    text = body.text_content().strip()
     if case_insensitive:
         text = text.lower()
     if dehyphenate:
@@ -20,7 +26,7 @@ def word_frequencies(
         text = re.sub(r"-\r?\n", "", text)
         # Replace line breaks with a space.
         text = re.sub(r"\r?\n", " ", text)
-    word_counts = {}
+    word_counts: dict[str, int] = {}
     separators = re.compile(r'\W+', re.UNICODE)
     if spaces:
         separators = re.compile(r'\s+', re.UNICODE)
@@ -30,14 +36,14 @@ def word_frequencies(
         word_counts[word] = word_counts[word] + 1 if word in word_counts else 1
 
     for idx, word in enumerate(
-            sorted(word_counts, reverse=True, key=word_counts.get)
+            sorted(word_counts, reverse=True, key=cast(Callable[[str], int], word_counts.get))
     ):
         if idx > max_hits:
             break
         yield f"{word_counts[word]:<5d}\t{word}"
 
 
-def main():
+def main() -> None:
     parser = argparse.ArgumentParser(
         description='Calculate word frequency in an hOCR file'
     )

@@ -2,6 +2,8 @@
 Extract lines from Google 1000 book sample.
 """
 
+from __future__ import annotations
+
 import argparse
 import glob
 import os
@@ -9,6 +11,7 @@ import re
 import sys
 import xml.sax
 from dataclasses import dataclass
+from typing import cast, Any, Callable
 
 from PIL import Image
 
@@ -56,25 +59,26 @@ Environment Variables:
 """
 
 
-def extract_g1000(hocr, image_pattern, output_prefix):
+def extract_g1000(hocr: str, image_pattern: str, output_prefix: str) -> None:
     if not os.path.exists(hocr):
         sys.stderr.write(hocr + ": not found")
         sys.exit(1)
 
     parser = xml.sax.make_parser()
-    stream = os.popen(
-        f"tidy -q -wrap 9999 -asxhtml < {hocr} 2> /tmp/tidy_errs", "r"
-    )
-    configuration = get_configuration()
-    handler = DocumentHandler(
-        output_pattern=output_prefix,
-        image_list=get_image_list(image_pattern),
-        configuration=configuration
-    )
-    parser.parseFile(stream, handler)
+    with os.popen(
+            f"tidy -q -wrap 9999 -asxhtml < {hocr} 2> /tmp/tidy_errs", "r"
+    ) as stream:
+        configuration = get_configuration()
+        handler = DocumentHandler(
+            output_pattern=output_prefix,
+            image_list=get_image_list(image_pattern),
+            configuration=configuration
+        )
+        parser.setContentHandler(handler)
+        parser.parse(stream)  # type: ignore[no-untyped-call]
 
 
-def get_image_list(image_pattern):
+def get_image_list(image_pattern: str) -> list[str]:
     if image_pattern[0] == "@":
         with open(image_pattern[1:]) as fd:
             image_list = fd.readlines()
@@ -85,20 +89,21 @@ def get_image_list(image_pattern):
     return image_list
 
 
-def get_configuration():
-    @dataclass
-    class Configuration:
-        element: str = 'ocr_line'
-        regex: str = '.'
-        min_len: int = 20
-        max_len: int = 50
-        dict_data = None
-        dict_file: str = None
-        max_lines: int = 1000000
-        pad: int = 2
-        output_format: str = 'png'
+@dataclass
+class Configuration:
+    element: str = 'ocr_line'
+    regex: str = '.'
+    min_len: int = 20
+    max_len: int = 50
+    dict_data: dict[str, int] | None = None
+    dict_file: str = ''
+    max_lines: int = 1000000
+    pad: int = 2
+    output_format: str = 'png'
 
-    def set_value_if_available(key, name=None, parser=None):
+
+def get_configuration() -> Configuration:
+    def set_value_if_available(key: str, name: str | None = None, parser: Callable[[str], Any] | None = None) -> None:
         name = name or key
         value_ = os.getenv(key)
         if not value_:
@@ -131,7 +136,7 @@ def get_configuration():
     return configuration
 
 
-def check_dict(dictionary, s):
+def check_dict(dictionary: dict[str, Any], s: str) -> bool:
     if not dictionary:
         return True
     words = re.split(r'\W+', s)
@@ -143,14 +148,13 @@ def check_dict(dictionary, s):
     return True
 
 
-def write_string(file, text):
-    stream = open(file, "w")
-    stream.write(text.encode("utf-8"))
-    stream.close()
+def write_string(filename: str, text: str) -> None:
+    with open(filename, "wb") as stream:
+        stream.write(text.encode("utf-8"))
 
 
 class DocumentHandler(xml.sax.handler.ContentHandler):
-    def __init__(self, output_pattern, image_list, configuration):
+    def __init__(self, output_pattern: str, image_list: list[str], configuration: Configuration) -> None:
         super().__init__()
         self.element = configuration.element
         self.regex = configuration.regex
@@ -158,18 +162,18 @@ class DocumentHandler(xml.sax.handler.ContentHandler):
         self.configuration = configuration
         self.output_pattern = output_pattern
 
-    def startDocument(self):  # noqa: N802
+    def startDocument(self) -> None:  # noqa: N802
         self.total = 0
         self.pageno = -1
-        self.text = None
+        self.text = ""
         self.depth = 0
         self.start = -1
-        self.copied = {}
+        # self.copied: dict[] = {}
 
-    def endDocument(self):  # noqa: N802
+    def endDocument(self) -> None:  # noqa: N802
         pass
 
-    def startElement(self, name, attrs):  # noqa: N802
+    def startElement(self, name: str, attrs: xml.sax.xmlreader.AttributesImpl) -> None:  # noqa: N802
         self.depth += 1
         if attrs.get("class", "") == "ocr_page":
             self.lineno = -1
@@ -178,19 +182,23 @@ class DocumentHandler(xml.sax.handler.ContentHandler):
             self.image = Image.open(self.page)
         if attrs.get("class", "") == self.element:
             self.lineno += 1
-            props = attrs.get("title", "")
-            self.bbox = get_prop(props, "bbox")
+            props = attrs.get("title", None)
+            if props is not None:
+                self.bbox = get_prop(props, "bbox")  # type: ignore[arg-type]  # FIXME
+            else:
+                self.bbox = None
             self.start = self.depth
             self.text = ""
 
-    def endElement(self, name):  # noqa: N802
+    def endElement(self, name: str) -> None:  # noqa: N802
         if self.depth == self.start:
             if self.configuration.min_len <= len(self.text) <= \
                     self.configuration.max_len and \
                     re.match(self.regex, self.text) and \
-                    check_dict(dict, self.text):
+                    check_dict(cast(dict[str, Any], self.configuration.dict_data), self.text):
                 print(self.page, self.bbox, self.text.encode("utf-8"))
                 w, h = self.image.size
+                assert self.bbox
                 x0, y0, x1, y1 = [int(s) for s in self.bbox.split()]
                 assert y0 < y1 and x0 < x1 <= w and y1 <= h
                 x0 = max(0, x0 - self.configuration.pad)
@@ -209,16 +217,16 @@ class DocumentHandler(xml.sax.handler.ContentHandler):
                 self.total += 1
                 if self.total >= self.configuration.max_lines:
                     sys.exit(0)
-            self.text = None
+            self.text = ""
             self.start = -1
         self.depth -= 1
 
-    def characters(self, text, start, end):
+    def characters(self, text: str, start: int, end: int) -> None:  # type: ignore[override]
         if self.text is not None:
             self.text += text[start:end]
 
 
-def main():
+def main() -> None:
     parser = argparse.ArgumentParser(
         usage=USAGE,
         formatter_class=argparse.RawDescriptionHelpFormatter

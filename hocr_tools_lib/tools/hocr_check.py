@@ -4,34 +4,37 @@
 Check the given file for conformance with the hOCR format spec.
 """
 
+from __future__ import annotations
+
 import argparse
 import sys
+from os import PathLike
 
-from lxml import html
+from lxml import etree, html
 
 from hocr_tools_lib.utils.node_utils import get_bbox, get_prop
 from hocr_tools_lib.utils.rectangle_utils import mostly_non_overlapping
 
 
 class Checker:
-    test_counter = 0
+    test_counter: int = 0
 
-    def __init__(self, hocr_file, no_overlap=False):
+    def __init__(self, hocr_file: PathLike[str], no_overlap: bool = False) -> None:
         """
         :param hocr_file: hOCR file to check.
         :param no_overlap: Disable the overlap checks.
         """
         self.test_counter = 0
         self.no_overlap = no_overlap
-        self.doc = html.parse(hocr_file)
+        self.doc: etree._ElementTree[html.HtmlElement] = html.parse(hocr_file)
 
-    def test_ok(self, v, msg):
+    def test_ok(self, v: bool, msg: str) -> None:
         self.test_counter += 1
         if not v:
             sys.stderr.write("not ")
         sys.stderr.write("ok " + str(self.test_counter) + " - " + msg + "\n")
 
-    def check(self):
+    def check(self) -> None:
         self.check_xml_structure()
         if not self.no_overlap:
             self.check_geometry()
@@ -47,7 +50,7 @@ class Checker:
         # - check for significant overlaps
         # - check that image files are not repeated
 
-    def check_xml_structure(self):
+    def check_xml_structure(self) -> None:
         # Check for presence of meta information.
         self.test_ok(
             self.doc.xpath("//meta[@name='ocr-system']") != [],
@@ -87,7 +90,7 @@ class Checker:
                 f"ocr_carea {carea_idx:2d} in an ocr_page"
             )
 
-    def check_geometry(self):
+    def check_geometry(self) -> None:
         for page in self.doc.xpath("//*[@class='ocr_page']"):
             # Check lines.
             objs = page.xpath("//*[@class='ocr_line']")
@@ -117,7 +120,7 @@ class Checker:
             )
 
 
-def main():
+def main() -> None:
     parser = argparse.ArgumentParser(
         description=(
             "Check the given file for conformance with the hOCR format spec"

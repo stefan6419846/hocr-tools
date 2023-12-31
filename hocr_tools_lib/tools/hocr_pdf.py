@@ -17,6 +17,8 @@ Create a searchable PDF from a pile of hOCr + JPEG. Tested with
 Tesseract.
 """
 
+from __future__ import annotations
+
 import argparse
 import base64
 import glob
@@ -25,11 +27,12 @@ import os
 import re
 import sys
 import zlib
+from typing import Any
 
-from bidi.algorithm import get_display
-from reportlab.pdfbase import pdfmetrics
-from reportlab.pdfbase.ttfonts import TTFont
-from reportlab.pdfgen.canvas import Canvas
+from bidi.algorithm import get_display  # type: ignore[import-untyped]
+from reportlab.pdfbase import pdfmetrics  # type: ignore[import-untyped]
+from reportlab.pdfbase.ttfonts import TTFont  # type: ignore[import-untyped]
+from reportlab.pdfgen.canvas import Canvas  # type: ignore[import-untyped]
 
 from lxml import etree, html
 from PIL import Image
@@ -42,8 +45,8 @@ class StdoutWrapper:
     the invisible font to be injected as bytes but written out as a string.
     """
 
-    def write(self, data, *args, **kwargs):
-        if bytes != str and isinstance(data, bytes):
+    def write(self, data: str | bytes, *args: Any, **kwargs: Any) -> None:
+        if isinstance(data, bytes):
             data = data.decode('latin1')
         sys.stdout.write(data)
 
@@ -52,7 +55,7 @@ class NoImagesFoundError(RuntimeError):
     pass
 
 
-def export_pdf(directory, default_dpi=300, savefile=None):
+def export_pdf(directory: str, default_dpi: int = 300, savefile: str | None = None) -> None:
     """
     Create a searchable PDF from a pile of HOCR + JPEG.
     """
@@ -84,7 +87,7 @@ def export_pdf(directory, default_dpi=300, savefile=None):
     pdf.save()
 
 
-def add_text_layer(pdf, image, height, dpi):
+def add_text_layer(pdf: Canvas, image: str, height: float, dpi: int) -> None:
     """
     Draw an invisible text layer for OCR data.
     """
@@ -93,13 +96,17 @@ def add_text_layer(pdf, image, height, dpi):
     hocr_file = os.path.splitext(image)[0] + ".hocr"
     hocr = etree.parse(hocr_file, html.XHTMLParser())
     for line in hocr.xpath('//*[@class="ocr_line"]'):
-        line_box = p1.search(line.attrib['title']).group(1).split()
+        line_box_match = p1.search(line.attrib['title'])
+        assert line_box_match is not None
+        line_box_str = line_box_match.group(1).split()
+        line_box: list[float] = [float(i) for i in line_box_str]
         try:
-            baseline = p2.search(line.attrib['title']).group(1).split()
+            baseline_match = p2.search(line.attrib['title'])
+            assert baseline_match is not None
+            baseline_str = baseline_match.group(1).split()
+            baseline: list[float] = [float(i) for i in baseline_str]
         except AttributeError:
             baseline = [0, 0]
-        line_box = [float(i) for i in line_box]
-        baseline = [float(i) for i in baseline]
         xpath_elements = './/*[@class="ocrx_word"]'
         if not (line.xpath('boolean(' + xpath_elements + ')')):
             # If there are no words elements present, we switch to lines
@@ -112,8 +119,10 @@ def add_text_layer(pdf, image, height, dpi):
             font_width = pdf.stringWidth(rawtext, 'invisible', 8)
             if font_width <= 0:
                 continue
-            box = p1.search(word.attrib['title']).group(1).split()
-            box = [float(i) for i in box]
+            box_match = p1.search(word.attrib['title'])
+            assert box_match is not None
+            box_str = box_match.group(1).split()
+            box: list[float] = [float(i) for i in box_str]
             b = polyval(
                 baseline,
                 (box[0] + box[2]) / 2 - line_box[0]
@@ -129,14 +138,14 @@ def add_text_layer(pdf, image, height, dpi):
             pdf.drawText(text)
 
 
-def polyval(poly, x):
+def polyval(poly: list[float], x: float) -> float:
     return x * poly[0] + poly[1]
 
 
 # Glyphless variation of vedaal's invisible font retrieved from
 # http://www.angelfire.com/pr/pgpf/if.html, which says:
 # 'Invisible font' is unrestricted freeware. Enjoy, Improve, Distribute freely
-def load_invisible_font():
+def load_invisible_font() -> None:
     font = """
 eJzdlk1sG0UUx/+zs3btNEmrUKpCPxikSqRS4jpfFURUagmkEQQoiRXgAl07Y3vL2mvt2ml8APXG
 hQPiUEGEVDhWVHyIC1REPSAhBOWA+BCgSoULUqsKcWhVBKjhzfPU+VCi3Flrdn7vzZv33ryZ3TUE
@@ -161,11 +170,11 @@ CMGjwvxTsr74/f/F95m3TH9x8o0/TU//N+7/D/ScVcA=
 """.encode('latin1')
     uncompressed = bytearray(zlib.decompress(base64.b64decode(font)))
     ttf = io.BytesIO(uncompressed)
-    setattr(ttf, "name", "(invisible.ttf)")
+    ttf.name = "(invisible.ttf)"
     pdfmetrics.registerFont(TTFont('invisible', ttf))
 
 
-def main():
+def main() -> None:
     parser = argparse.ArgumentParser(
         description="Create a searchable PDF from a pile of hOCR and JPEG"
     )

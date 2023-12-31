@@ -1,5 +1,8 @@
+from __future__ import annotations
+
 import contextlib
 from io import StringIO
+from pathlib import Path
 from unittest import mock
 
 from hocr_tools_lib.tools import hocr_lines
@@ -7,8 +10,8 @@ from tests import TestCase
 
 
 class HocrLinesTestCase(TestCase):
-    def test_lines(self):
-        filename = self.get_data_file('tess.hocr')
+    def test_lines(self) -> None:
+        filename = Path(self.get_data_file('tess.hocr'))
         lines = list(hocr_lines.lines(filename))
 
         self.assertEqual(37, len(lines))
@@ -17,7 +20,7 @@ class HocrLinesTestCase(TestCase):
             lines[0]
         )
 
-    def test_main(self):
+    def test_main(self) -> None:
         filename = self.get_data_file('tess.hocr')
         stdout = StringIO()
         with mock.patch('sys.argv', ['hocr-lines', filename]):

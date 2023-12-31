@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import contextlib
 import subprocess
 from io import StringIO
@@ -9,7 +11,7 @@ from tests import TestCase
 
 
 class HocrCutTestCase(TestCase):
-    def test_subprocess(self):
+    def test_subprocess(self) -> None:
         with TemporaryDirectory() as directory:
             filename = self.get_data_file_copy(
                 'litver.html', directory=directory
@@ -20,7 +22,7 @@ class HocrCutTestCase(TestCase):
                 stderr=subprocess.PIPE,
             )
 
-    def test_main(self):
+    def test_main(self) -> None:
         with TemporaryDirectory() as directory:
             filename = self.get_data_file_copy(
                 'litver.html', directory=directory
@@ -32,12 +34,12 @@ class HocrCutTestCase(TestCase):
                 with contextlib.redirect_stdout(stdout):
                     hocr_cut.main()
 
-    def test_generated_files(self):
-        with TemporaryDirectory() as directory:
+    def test_generated_files(self) -> None:
+        with TemporaryDirectory() as temp_directory:
             filename = self.get_data_file_copy(
-                'litver.html', directory=directory
+                'litver.html', directory=temp_directory
             )
-            self.get_data_file_copy('litver.png', directory=directory)
+            self.get_data_file_copy('litver.png', directory=temp_directory)
             directory = filename.parent
 
             stdout = StringIO()

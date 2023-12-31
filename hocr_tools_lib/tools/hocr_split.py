@@ -2,13 +2,16 @@
 Split an hOCR file into individual pages.
 """
 
+from __future__ import annotations
+
 import argparse
 import re
+from os import PathLike
 
 from lxml import etree, html
 
 
-def split(hocr, pattern):
+def split(hocr: PathLike[str] | str, pattern: str) -> None:
     assert re.search('%[0-9]*d', pattern)
 
     doc = etree.parse(hocr, html.XHTMLParser())
@@ -26,7 +29,7 @@ def split(hocr, pattern):
         index += 1
 
 
-def main():
+def main() -> None:
     parser = argparse.ArgumentParser(
         description="split a multipage hOCR file into single pages"
     )

@@ -30,6 +30,7 @@ setup(
         'Topic :: Multimedia :: Graphics :: Graphics Conversion',
         'Topic :: Scientific/Engineering :: Image Recognition',
         'Topic :: Utilities',
+        'Typing :: Typed',
     ],
     install_requires=[
         'Pillow>=9.3.0',
@@ -39,9 +40,21 @@ setup(
     ],
     extras_require={
         'dev': [
+            # Tests.
             'beautifulsoup4',
             'requests',
             'importlib-resources; python_version<"3.10"',
+            # Linting.
+            'flake8',
+            'flake8-bugbear',
+            'pep8-naming',
+            # Typing.
+            'mypy',
+            'types-beautifulsoup4',
+            'types-html5lib',
+            'types-lxml',
+            'types-Pillow',
+            'types-requests',
         ],
     },
     packages=find_packages(

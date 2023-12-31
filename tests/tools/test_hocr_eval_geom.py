@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import contextlib
 import subprocess
 from io import StringIO
@@ -8,7 +10,7 @@ from tests import TestCase
 
 
 class HocrEvalGeomTestCase(TestCase):
-    def test_with_self(self):
+    def test_with_self(self) -> None:
         filename = self.get_data_file('sample.html')
         stdout = subprocess.check_output(
             ['hocr-eval-geom', filename, filename],
@@ -16,7 +18,7 @@ class HocrEvalGeomTestCase(TestCase):
         )
         self.assertRegex(stdout, br'\(0, 0, 0.0, ')
 
-    def test_with_options(self):
+    def test_with_options(self) -> None:
         tess_hocr = self.get_data_file('tess.hocr')
         sample_html = self.get_data_file('sample.html')
         subprocess.check_call(
@@ -27,7 +29,7 @@ class HocrEvalGeomTestCase(TestCase):
             stdout=subprocess.PIPE, stderr=subprocess.PIPE,
         )
 
-    def test_main(self):
+    def test_main(self) -> None:
         tess_hocr = self.get_data_file('tess.hocr')
         sample_html = self.get_data_file('sample.html')
 

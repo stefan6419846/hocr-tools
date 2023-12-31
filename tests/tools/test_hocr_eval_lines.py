@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import contextlib
 import subprocess
 from io import StringIO
@@ -8,7 +10,7 @@ from tests import TestCase
 
 
 class HocrEvalLinesTestCase(TestCase):
-    def test_subprocess(self):
+    def test_subprocess(self) -> None:
         sample_txt = self.get_data_file('sample.txt')
         sample_html = self.get_data_file('sample.html')
         subprocess.check_call(
@@ -16,7 +18,7 @@ class HocrEvalLinesTestCase(TestCase):
             stderr=subprocess.PIPE, stdout=subprocess.PIPE
         )
 
-    def test_main(self):
+    def test_main(self) -> None:
         sample_txt = self.get_data_file('sample.txt')
         sample_html = self.get_data_file('sample.html')
 
@@ -28,18 +30,18 @@ class HocrEvalLinesTestCase(TestCase):
             with contextlib.redirect_stdout(stdout):
                 hocr_eval_lines.main()
 
-    def test_output(self):
+    def test_output(self) -> None:
         tess_hocr = self.get_data_file('tess.hocr')
         sample_txt = self.get_data_file('sample.txt')
 
-        stdout = StringIO()
+        stdout_io = StringIO()
         with mock.patch(
                 'sys.argv',
                 ['hocr-eval-lines', '-v', sample_txt, tess_hocr]
         ):
-            with contextlib.redirect_stdout(stdout):
+            with contextlib.redirect_stdout(stdout_io):
                 hocr_eval_lines.main()
-        stdout = stdout.getvalue()
+        stdout = stdout_io.getvalue()
 
         # Check whether detection of ocr_errors is correct.
         self.assertIn('ocr_errors 7\n', stdout)

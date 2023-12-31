@@ -1,9 +1,11 @@
+from __future__ import annotations
+
 import argparse
 
 from lxml import etree, html
 
 
-def combine(filenames):
+def combine(filenames: list[str]) -> str:
     doc = html.parse(filenames[0])
     pages = doc.xpath("//*[@class='ocr_page']")
     container = pages[-1].getparent()
@@ -17,7 +19,7 @@ def combine(filenames):
     return etree.tostring(doc, pretty_print=True).decode('UTF-8')
 
 
-def main():
+def main() -> None:
     parser = argparse.ArgumentParser(
         description="combine multiple hOCR documents into one"
     )

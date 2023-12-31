@@ -1,8 +1,11 @@
+from __future__ import annotations
+
 import atexit
 import shutil
 import sys
 from contextlib import ExitStack
 from pathlib import Path
+from typing import cast
 from unittest import TestCase as _TestCase
 
 if sys.version_info < (3, 10):
@@ -13,7 +16,7 @@ else:
 
 class TestCase(_TestCase):
     @classmethod
-    def get_data_file(cls, path):
+    def get_data_file(cls, path: str) -> str:
         file_manager = ExitStack()
         atexit.register(file_manager.close)
         reference = importlib_resources.files('tests.data') / path
@@ -22,17 +25,17 @@ class TestCase(_TestCase):
         ))
 
     @classmethod
-    def get_data_content(cls, path):
+    def get_data_content(cls, path: str) -> bytes:
         reference = importlib_resources.files('tests.data') / path
-        return reference.read_bytes()
+        return cast(bytes, reference.read_bytes())  # type: ignore[redundant-cast,unused-ignore]  # `cast` only required for Python < 3.10.
 
     @classmethod
-    def get_data_directory(cls):
+    def get_data_directory(cls) -> Path:
         first_file = next(importlib_resources.files('tests.data').iterdir())
         return Path(cls.get_data_file(first_file.name)).parent
 
     @classmethod
-    def get_data_file_copy(cls, path, directory):
+    def get_data_file_copy(cls, path: str, directory: str | Path) -> Path:
         directory = Path(directory)
         source = Path(cls.get_data_file(path))
         target = directory / source.name
@@ -44,17 +47,29 @@ if sys.version_info < (3, 11):  # pragma: no cover
     # Backport new functionality.
     import contextlib
     import os
+    from typing import Any
 
-    class chdir(contextlib.AbstractContextManager):  # noqa: N801
-        def __init__(self, path):
+    if sys.version_info < (3, 9):
+        _SUPERCLASS = contextlib.AbstractContextManager
+    else:
+        _SUPERCLASS = contextlib.AbstractContextManager[None]
+
+    class chdir(_SUPERCLASS):  # noqa: N801
+        def __init__(self, path: os.PathLike[str] | str) -> None:
             self.path = path
-            self._old_cwd = []
+            self._old_cwd: list[str] = []
 
-        def __enter__(self):
+        def __enter__(self) -> None:
             self._old_cwd.append(os.getcwd())
             os.chdir(self.path)
 
-        def __exit__(self, *excinfo):
+        def __exit__(self, *excinfo: Any) -> None:
             os.chdir(self._old_cwd.pop())
 else:  # pragma: no cover
     from contextlib import chdir  # noqa: F401
+
+
+__all__ = [
+    'TestCase',
+    'chdir',
+]

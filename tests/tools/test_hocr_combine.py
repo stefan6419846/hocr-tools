@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import contextlib
 import subprocess
 from io import StringIO
@@ -8,22 +10,22 @@ from tests import TestCase
 
 
 class HocrCombineTestCase(TestCase):
-    def test_subprocess(self):
+    def test_subprocess(self) -> None:
         filename = self.get_data_file('sample.html')
         subprocess.check_call(
             ['hocr-combine', filename, filename], stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
         )
 
-    def test_main(self):
+    def test_main(self) -> None:
         filename = self.get_data_file('sample.html')
         stdout = StringIO()
         with mock.patch('sys.argv', ['hocr-combine', filename, filename]):
             with contextlib.redirect_stdout(stdout):
                 hocr_combine.main()
 
-    def test_ocr_line_count(self):
-        def count(content_):
+    def test_ocr_line_count(self) -> None:
+        def count(content_: str) -> int:
             return content_.count('class="ocr_line"') + \
                 content_.count("class='ocr_line'")
 

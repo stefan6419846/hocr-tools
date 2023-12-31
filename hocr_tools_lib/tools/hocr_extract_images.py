@@ -3,21 +3,25 @@ Extract the images and text within all the ocr_line elements
 within the hOCR file.
 """
 
+from __future__ import annotations
+
 import argparse
 import ast
 import os
 import sys
+from typing import cast, Tuple  # TODO: Drop `Tuple` after dropping Python 3.8.
 
 from lxml import html
 from PIL import Image
 
 from hocr_tools_lib.utils.node_utils import get_prop, get_text
+from hocr_tools_lib.utils.typing_utils import SupportsReadClose
 
 
 def extract_images(
-        hocr, basename, pattern="line-%03d.png", element="ocr_line",
-        pad=None, unicode_dammit=False
-):
+        hocr: SupportsReadClose[str], basename: str, pattern: str = "line-%03d.png", element: str = "ocr_line",
+        pad: str | None = None, unicode_dammit: bool = False
+) -> None:
     padding = None
     if pad is not None:
         padding = ast.literal_eval("[" + pad + "]")
@@ -30,7 +34,7 @@ def extract_images(
         txt_pattern = pattern[:-3] + 'txt'
 
     if unicode_dammit:
-        from bs4 import UnicodeDammit
+        from bs4 import UnicodeDammit  # type: ignore[attr-defined]
         content = hocr.read()
         doc = UnicodeDammit(content, is_html=True)
         parser = html.HTMLParser(encoding=doc.original_encoding)
@@ -43,6 +47,7 @@ def extract_images(
         image_name = get_prop(page, 'file', strip_value=True)
         if not image_name:
             image_name = get_prop(page, 'image', strip_value=True)
+            assert image_name
         if basename:
             image_name = os.path.join(basename, os.path.basename(image_name))
         if not os.path.exists(image_name):
@@ -51,7 +56,9 @@ def extract_images(
         lines = page.xpath(f"//*[@class='{element}']")
         line_count = 1
         for line in lines:
-            bbox = [int(x) for x in get_prop(line, 'bbox').split()]
+            bbox_prop = get_prop(line, 'bbox')
+            assert bbox_prop
+            bbox = [int(x) for x in bbox_prop.split()]
             if padding is not None:
                 w, h = image.size
                 bbox[0] = max(bbox[0] - padding[0], 0)
@@ -60,7 +67,7 @@ def extract_images(
                 bbox[3] = min(bbox[3] + padding[3], h)
             if bbox[0] > bbox[2] or bbox[1] >= bbox[3]:
                 continue
-            line_image = image.crop(bbox)
+            line_image = image.crop(cast(Tuple[int, int, int, int], tuple(bbox)))
             line_image.save(pattern % line_count)
             with open(
                     txt_pattern % line_count, mode='w', encoding='utf-8'
@@ -70,7 +77,7 @@ def extract_images(
         image.close()
 
 
-def main():
+def main() -> None:
     parser = argparse.ArgumentParser(
         description=(
             "Extract the images and texts within all the ocr_line "
