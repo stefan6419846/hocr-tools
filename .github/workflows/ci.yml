@@ -41,3 +41,4 @@ jobs:
     - name: mypy
       run:
         mypy --strict hocr_tools_lib/ tests/
+      if: matrix.python != '3.8'
