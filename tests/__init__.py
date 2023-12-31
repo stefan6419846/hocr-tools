@@ -5,7 +5,6 @@ import shutil
 import sys
 from contextlib import ExitStack
 from pathlib import Path
-from typing import cast, Type
 from unittest import TestCase as _TestCase
 
 if sys.version_info < (3, 10):
