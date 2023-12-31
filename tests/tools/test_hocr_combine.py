@@ -25,7 +25,7 @@ class HocrCombineTestCase(TestCase):
                 hocr_combine.main()
 
     def test_ocr_line_count(self) -> None:
-        def count(content_):
+        def count(content_: str) -> int:
             return content_.count('class="ocr_line"') + \
                 content_.count("class='ocr_line'")
 
