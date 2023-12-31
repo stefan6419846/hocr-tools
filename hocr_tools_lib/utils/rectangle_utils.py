@@ -1,9 +1,9 @@
 from __future__ import annotations
 
-from typing import cast
+from typing import cast, Tuple  # TODO: Drop `Tuple` after dropping Python 3.8.
 
 
-RectangleType = tuple[float, float, float, float]
+RectangleType = Tuple[float, float, float, float]
 
 
 def intersect(u: RectangleType | None, v: RectangleType | None) -> RectangleType | None:
