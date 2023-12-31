@@ -27,7 +27,7 @@ class TestCase(_TestCase):
     @classmethod
     def get_data_content(cls, path: str) -> bytes:
         reference = importlib_resources.files('tests.data') / path
-        return cast(bytes, reference.read_bytes())  # `cast` for Python 3.8 only.
+        return reference.read_bytes()
 
     @classmethod
     def get_data_directory(cls) -> Path:
@@ -50,7 +50,7 @@ if sys.version_info < (3, 11):  # pragma: no cover
     from typing import Any
 
     if sys.version_info < (3, 9):
-        _SUPERCLASS: Type = contextlib.AbstractContextManager
+        _SUPERCLASS = contextlib.AbstractContextManager
     else:
         _SUPERCLASS = contextlib.AbstractContextManager[None]
 
@@ -67,3 +67,9 @@ if sys.version_info < (3, 11):  # pragma: no cover
             os.chdir(self._old_cwd.pop())
 else:  # pragma: no cover
     from contextlib import chdir  # noqa: F401
+
+
+__all__ = [
+    'TestCase',
+    'chdir',
+]
