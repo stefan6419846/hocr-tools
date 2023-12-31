@@ -21,6 +21,7 @@ class SmokeTests(TestCase):
             with self.subTest(tool):
                 binary_path = shutil.which(tool)
                 self.assertIsNotNone(binary_path)
+                assert tool is not None  # Satisfy mypy.
                 subprocess.check_call(
                     [binary_path, '-h'], stdout=subprocess.PIPE
                 )
