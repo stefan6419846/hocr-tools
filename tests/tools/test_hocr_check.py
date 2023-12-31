@@ -33,18 +33,18 @@ class HocrCheckTestCase(TestCase):
         directory = self.get_data_directory() / 'hocr_check'
         for path in directory.rglob('ok-*html'):
             with self.subTest(path=path):
-                stderr = StringIO()
-                with contextlib.redirect_stderr(stderr):
+                stderr_io = StringIO()
+                with contextlib.redirect_stderr(stderr_io):
                     hocr_check.Checker(hocr_file=path).check()
-                stderr = stderr.getvalue()
+                stderr = stderr_io.getvalue()
                 self.assertNotIn('not ok', stderr)
 
     def test_invalid_examples(self) -> None:
         directory = self.get_data_directory() / 'hocr_check'
         for path in directory.rglob('notok-*html'):
             with self.subTest(path=path):
-                stderr = StringIO()
-                with contextlib.redirect_stderr(stderr):
+                stderr_io = StringIO()
+                with contextlib.redirect_stderr(stderr_io):
                     hocr_check.Checker(hocr_file=path).check()
-                stderr = stderr.getvalue()
+                stderr = stderr_io.getvalue()
                 self.assertIn('not ok', stderr)
