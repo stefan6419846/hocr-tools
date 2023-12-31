@@ -19,7 +19,7 @@ from hocr_tools_lib.utils.typing_utils import SupportsReadClose
 
 
 def extract_images(
-        hocr: SupportsReadClose, basename: str, pattern: str = "line-%03d.png", element: str = "ocr_line",
+        hocr: SupportsReadClose[str], basename: str, pattern: str = "line-%03d.png", element: str = "ocr_line",
         pad: str | None = None, unicode_dammit: bool = False
 ) -> None:
     padding = None
