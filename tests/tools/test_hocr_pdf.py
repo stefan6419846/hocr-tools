@@ -54,17 +54,17 @@ class HocrPdfTestCase(TestCase):
             pdf_path = directory / f'{self.WORK}.pdf'
             stdout = StringIO()
             with contextlib.redirect_stdout(stdout):
-                hocr_pdf.export_pdf(directory=directory)
+                hocr_pdf.export_pdf(directory=str(directory))
             pdf_path.write_text(stdout.getvalue())
             self._check_content(pdf_path)
 
             pdf_path = directory / f'{self.WORK}-saved.pdf'
-            hocr_pdf.export_pdf(directory=directory, savefile=str(pdf_path))
+            hocr_pdf.export_pdf(directory=str(directory), savefile=str(pdf_path))
             self._check_content(pdf_path)
 
     def test_main(self) -> None:
-        with TemporaryDirectory() as directory:
-            directory = Path(directory)
+        with TemporaryDirectory() as temp_directory:
+            directory = Path(temp_directory)
             self._download_files(directory)
 
             stdout = StringIO()
