@@ -35,11 +35,11 @@ class HocrCutTestCase(TestCase):
                     hocr_cut.main()
 
     def test_generated_files(self) -> None:
-        with TemporaryDirectory() as directory:
+        with TemporaryDirectory() as temp_directory:
             filename = self.get_data_file_copy(
-                'litver.html', directory=directory
+                'litver.html', directory=temp_directory
             )
-            self.get_data_file_copy('litver.png', directory=directory)
+            self.get_data_file_copy('litver.png', directory=temp_directory)
             directory = filename.parent
 
             stdout = StringIO()
