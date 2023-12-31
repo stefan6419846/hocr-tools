@@ -5,6 +5,7 @@ import shutil
 import sys
 from contextlib import ExitStack
 from pathlib import Path
+from typing import cast, Type
 from unittest import TestCase as _TestCase
 
 if sys.version_info < (3, 10):
@@ -26,7 +27,7 @@ class TestCase(_TestCase):
     @classmethod
     def get_data_content(cls, path: str) -> bytes:
         reference = importlib_resources.files('tests.data') / path
-        return reference.read_bytes()
+        return cast(bytes, reference.read_bytes())  # `cast` for Python 3.8 only.
 
     @classmethod
     def get_data_directory(cls) -> Path:
@@ -49,7 +50,7 @@ if sys.version_info < (3, 11):  # pragma: no cover
     from typing import Any
 
     if sys.version_info < (3, 9):
-        _SUPERCLASS = contextlib.AbstractContextManager
+        _SUPERCLASS: Type = contextlib.AbstractContextManager
     else:
         _SUPERCLASS = contextlib.AbstractContextManager[None]
 
