@@ -162,7 +162,7 @@ class DocumentHandler(xml.sax.handler.ContentHandler):
         self.configuration = configuration
         self.output_pattern = output_pattern
 
-    def startDocument(self) -> None:  # noqa: N802  # type: ignore[override]
+    def startDocument(self) -> None:  # noqa: N802
         self.total = 0
         self.pageno = -1
         self.text = ""
@@ -173,7 +173,7 @@ class DocumentHandler(xml.sax.handler.ContentHandler):
     def endDocument(self) -> None:  # noqa: N802
         pass
 
-    def startElement(self, name: str, attrs: dict[str, str]) -> None:  # noqa: N802  # type: ignore[override]
+    def startElement(self, name: str, attrs: xml.sax.xmlreader.AttributesImpl) -> None:  # noqa: N802
         self.depth += 1
         if attrs.get("class", "") == "ocr_page":
             self.lineno = -1
@@ -184,7 +184,7 @@ class DocumentHandler(xml.sax.handler.ContentHandler):
             self.lineno += 1
             props = attrs.get("title", None)
             if props is not None:
-                self.bbox = get_prop(props, "bbox")  # type: ignore[arg-type]  # FIXME
+                self.bbox = get_prop(props, "bbox")
             else:
                 self.bbox = None
             self.start = self.depth
