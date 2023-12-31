@@ -5,6 +5,7 @@ import shutil
 import sys
 from contextlib import ExitStack
 from pathlib import Path
+from typing import cast
 from unittest import TestCase as _TestCase
 
 if sys.version_info < (3, 10):
@@ -26,7 +27,7 @@ class TestCase(_TestCase):
     @classmethod
     def get_data_content(cls, path: str) -> bytes:
         reference = importlib_resources.files('tests.data') / path
-        return reference.read_bytes()
+        return cast(bytes, reference.read_bytes())  # `cast` only required for Python < 3.10.
 
     @classmethod
     def get_data_directory(cls) -> Path:
