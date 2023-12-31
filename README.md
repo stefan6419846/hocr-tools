@@ -20,6 +20,7 @@ This repository contains my own fork of the package with quite some changes:
 * Allow library usage and reduce code duplicates by this.
 * Migrate tests to plain *unittest*-based ones instead of some external framework.
 * Remove some deprecated code to make it compatible with latest Python 3 versions.
+* Add type hints.
 
 For now, I do not have any direct plans to send a corresponding PR. Unfortunately, as for
 quite some similar OCR-related tools, development is rather inactive (at least inside the
