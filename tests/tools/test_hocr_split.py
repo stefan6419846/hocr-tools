@@ -7,9 +7,9 @@ from tests import chdir, TestCase
 
 class HocrSplitTestCase(TestCase):
     def test_split(self) -> None:
-        with TemporaryDirectory() as directory:
+        with TemporaryDirectory() as temp_directory:
             filename = self.get_data_file_copy(
-                'hocr_split/test.hocr', directory
+                'hocr_split/test.hocr', temp_directory
             )
             directory = filename.parent
 
