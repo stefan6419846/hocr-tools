@@ -10,9 +10,9 @@ from tests import chdir, TestCase
 
 class HocrExtractImagesTestCase(TestCase):
     def _check(self, level: str, basename: str, expected_count: int, stdin: bool, extra_args: str = '') -> None:
-        with TemporaryDirectory() as directory:
-            tess_hocr = self.get_data_file_copy('tess.hocr', directory)
-            self.get_data_file_copy('alice_1.png', directory)
+        with TemporaryDirectory() as temp_directory:
+            tess_hocr = self.get_data_file_copy('tess.hocr', temp_directory)
+            self.get_data_file_copy('alice_1.png', temp_directory)
             directory = tess_hocr.parent
             if stdin:
                 command = [
