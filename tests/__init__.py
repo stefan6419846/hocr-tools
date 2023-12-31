@@ -27,7 +27,7 @@ class TestCase(_TestCase):
     @classmethod
     def get_data_content(cls, path: str) -> bytes:
         reference = importlib_resources.files('tests.data') / path
-        return cast(bytes, reference.read_bytes())  # type: ignore[redundant-cast]  # `cast` only required for Python < 3.10.
+        return cast(bytes, reference.read_bytes())  # type: ignore[redundant-cast,unused-ignore]  # `cast` only required for Python < 3.10.
 
     @classmethod
     def get_data_directory(cls) -> Path:
