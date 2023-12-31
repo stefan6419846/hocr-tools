@@ -47,8 +47,8 @@ class HocrPdfTestCase(TestCase):
                 'Test requires `pdfgrep` installed.'
             )  # pragma: no cover
 
-        with TemporaryDirectory() as directory:
-            directory = Path(directory)
+        with TemporaryDirectory() as temp_directory:
+            directory = Path(temp_directory)
             self._download_files(directory)
 
             pdf_path = directory / f'{self.WORK}.pdf'
