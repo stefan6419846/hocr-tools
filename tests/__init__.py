@@ -52,6 +52,7 @@ if sys.version_info < (3, 11):  # pragma: no cover
         _SUPERCLASS = contextlib.AbstractContextManager
     else:
         _SUPERCLASS = contextlib.AbstractContextManager[None]
+
     class chdir(_SUPERCLASS):  # noqa: N801
         def __init__(self, path: os.PathLike[str] | str) -> None:
             self.path = path
