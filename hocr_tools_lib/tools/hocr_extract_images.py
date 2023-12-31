@@ -9,7 +9,7 @@ import argparse
 import ast
 import os
 import sys
-from typing import cast
+from typing import cast, Tuple  # TODO: Drop `Tuple` after dropping Python 3.8.
 
 from lxml import html
 from PIL import Image
@@ -67,7 +67,7 @@ def extract_images(
                 bbox[3] = min(bbox[3] + padding[3], h)
             if bbox[0] > bbox[2] or bbox[1] >= bbox[3]:
                 continue
-            line_image = image.crop(cast(tuple[int, int, int, int], tuple(bbox)))
+            line_image = image.crop(cast(Tuple[int, int, int, int], tuple(bbox)))
             line_image.save(pattern % line_count)
             with open(
                     txt_pattern % line_count, mode='w', encoding='utf-8'
