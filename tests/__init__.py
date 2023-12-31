@@ -48,10 +48,10 @@ if sys.version_info < (3, 11):  # pragma: no cover
     import os
     from typing import Any
 
-    class chdir(contextlib.AbstractContextManager):  # noqa: N801
-        def __init__(self, path: os.PathLike[str | bytes]) -> None:
+    class chdir(contextlib.AbstractContextManager[None]):  # noqa: N801
+        def __init__(self, path: os.PathLike[str] | str) -> None:
             self.path = path
-            self._old_cwd = []
+            self._old_cwd: list[str] = []
 
         def __enter__(self) -> None:
             self._old_cwd.append(os.getcwd())
