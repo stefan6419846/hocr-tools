@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from typing import cast
-
 from lxml import html
 
 from hocr_tools_lib.utils import node_utils
@@ -15,8 +13,7 @@ class GetPropTestCase(TestCase):
             string = f"<div class='ocr_page' id='page_1' title='image {value}; bbox 0 0 2488 3507; ppageno 0'>"
         else:
             string = f'<div class="ocr_page" id="page_1" title="image {value}; bbox 0 0 2488 3507; ppageno 0">'
-        element = html.document_fromstring(string)
-        return cast(html.HtmlElement, list(element.xpath('//div'))[0])
+        return html.fromstring(string)
 
     def test_strip_value(self) -> None:
         for input_value in ["'alice_1.png'", '"alice_1.png"', 'alice_1.png']:
