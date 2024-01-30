@@ -16,7 +16,7 @@ def get_prop(node: HtmlElement, name: str, strip_value: bool = False) -> str | N
     for prop in props:
         key, args = prop.split(None, 1)
         if strip_value:
-            args = args.strip('"')
+            args = args.strip('"\'')
         if key == name:
             return args
     return None
