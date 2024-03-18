@@ -55,6 +55,8 @@ setup(
             'types-lxml',
             'types-Pillow',
             'types-requests',
+            # Spelling.
+            'codespell',
         ],
     },
     packages=find_packages(
