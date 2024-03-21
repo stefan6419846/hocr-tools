@@ -1,4 +1,7 @@
+# Ensure that we always test against the latest versions
+# as soon as they get released by pinning them here and
+# letting `dependabot` update them for new releases.
 Pillow==10.2.0
-lxml>=3.5.0
-python-bidi
-reportlab>=3.3.0
+lxml==5.0.0
+python-bidi==0.4.0
+reportlab==4.1.0
