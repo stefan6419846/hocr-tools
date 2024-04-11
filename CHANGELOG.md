@@ -1,5 +1,9 @@
 # Development version
 
+* Fix deprecation warning from `lxml` in `hocr-wordfreq`.
+* Migrate from `setup.py` to `pyproject.toml`.
+* Add Read the Docs configuration and missing docs.
+
 # Version 1.0.3 - 2024-03-18
 
 * Add type hints.
