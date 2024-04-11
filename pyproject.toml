@@ -1,0 +1,100 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "hocr-tools-lib"
+description = "Advanced tools for hOCR integration (library version)"
+version = "1.0.3"
+license = {text = "Apache-2.0"}
+readme = {file = "README.md", content-type = "text/markdown"}
+authors = [
+    {name = "Thomas Breuel"},
+    {name = "stefan6419846 (library version)"},
+]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Environment :: Console",
+    "Intended Audience :: End Users/Desktop",
+    "License :: OSI Approved :: Apache Software License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3 :: Only",
+    "Topic :: Multimedia :: Graphics :: Graphics Conversion",
+    "Topic :: Scientific/Engineering :: Image Recognition",
+    "Topic :: Utilities",
+    "Typing :: Typed",
+]
+keywords = [
+    "ocr",
+    "hocr",
+    "xhtml",
+]
+requires-python = ">=3.6, <4"
+dependencies = [
+    "Pillow>=9.3.0",
+    "lxml>=3.5.0",
+    "reportlab>=3.3.0",
+    "python-bidi",
+]
+
+[project.urls]
+Homepage = "https://github.com/stefan6419846/hocr-tools"
+Documentation = "https://hocr-tools-lib.readthedocs.io"
+Repository = "https://github.com/stefan6419846/hocr-tools"
+Issues = "https://github.com/stefan6419846/hocr-tools/issues"
+Changelog = "https://github.com/stefan6419846/hocr-tools/blob/next/CHANGELOG.md"
+
+[project.optional-dependencies]
+dev = [
+    # Tests.
+    "beautifulsoup4",
+    "requests",
+    "importlib-resources; python_version < '3.10'",
+    # Linting.
+    "flake8",
+    "flake8-bugbear",
+    "pep8-naming",
+    # Typing.
+    "mypy",
+    "types-beautifulsoup4",
+    "types-html5lib",
+    "types-lxml",
+    "types-Pillow",
+    "types-requests",
+    # Spelling.
+    "codespell",
+]
+docs = [
+    "sphinx",
+    "furo",
+]
+
+[project.scripts]
+hocr-check = "hocr_tools_lib.tools.hocr_check:main"
+hocr-combine = "hocr_tools_lib.tools.hocr_combine:main"
+hocr-cut = "hocr_tools_lib.tools.hocr_cut:main"
+hocr-eval = "hocr_tools_lib.tools.hocr_eval:main"
+hocr-eval-geom = "hocr_tools_lib.tools.hocr_eval_geom:main"
+hocr-eval-lines = "hocr_tools_lib.tools.hocr_eval_lines:main"
+hocr-extract-g1000 = "hocr_tools_lib.tools.hocr_extract_g1000:main"
+hocr-extract-images = "hocr_tools_lib.tools.hocr_extract_images:main"
+hocr-lines = "hocr_tools_lib.tools.hocr_lines:main"
+hocr-merge-dc = "hocr_tools_lib.tools.hocr_merge_dc:main"
+hocr-pdf = "hocr_tools_lib.tools.hocr_pdf:main"
+hocr-split = "hocr_tools_lib.tools.hocr_split:main"
+hocr-wordfreq = "hocr_tools_lib.tools.hocr_wordfreq:main"
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = [
+    "hocr_tools_lib",
+    "hocr_tools_lib.*"
+]
+namespaces = false
+
+[tool.mypy]
+strict = true
+files = "hocr_tools_lib/,tests/"

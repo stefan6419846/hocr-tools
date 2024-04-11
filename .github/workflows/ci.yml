@@ -39,7 +39,7 @@ jobs:
         flake8
     - name: mypy
       run:
-        mypy --strict hocr_tools_lib/ tests/
+        mypy
       if: matrix.python != '3.8'
     - name: codespell
       run:
