@@ -11,7 +11,13 @@ from os import PathLike
 from lxml import etree, html
 
 
-def split(hocr: PathLike[str] | str, pattern: str) -> None:
+def split(hocr: PathLike[str] | str, pattern: str = "base-%03d.html") -> None:
+    """
+    Split the given hOCR file into multiple pages.
+
+    :param hocr: hOCR file to split.
+    :param pattern: Naming pattern for the output files.
+    """
     assert re.search('%[0-9]*d', pattern)
 
     doc = etree.parse(hocr, html.XHTMLParser())

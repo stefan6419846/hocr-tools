@@ -1,3 +1,7 @@
+"""
+Merge Dublin Core metadata into hOCR header files.
+"""
+
 from __future__ import annotations
 
 import argparse
@@ -17,6 +21,13 @@ DC_KNOWN = [
 
 
 def merge_dc(dc: os.PathLike[str], hocr: os.PathLike[str]) -> bytes:
+    """
+    Merge the metadata into the hOCR file.
+
+    :param dc: The Dublin Core metadata file.
+    :param hocr: The hOCR input file.
+    :return: The generated hOCR data.
+    """
     dc_doc = etree.parse(dc, html.XHTMLParser())
     hocr_doc = html.parse(hocr)
 

@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 """
 Check the given file for conformance with the hOCR format spec.
 """
@@ -17,7 +15,14 @@ from hocr_tools_lib.utils.rectangle_utils import mostly_non_overlapping
 
 
 class Checker:
+    """
+    Container holding all the checks.
+    """
+
     test_counter: int = 0
+    """
+    Number of checks performed.
+    """
 
     def __init__(self, hocr_file: PathLike[str], no_overlap: bool = False) -> None:
         """
@@ -29,12 +34,21 @@ class Checker:
         self.doc: etree._ElementTree[html.HtmlElement] = html.parse(hocr_file)
 
     def test_ok(self, v: bool, msg: str) -> None:
+        """
+        Report the status of the current check to stderr.
+
+        :param v: The test result.
+        :param msg: The message to display.
+        """
         self.test_counter += 1
         if not v:
             sys.stderr.write("not ")
         sys.stderr.write("ok " + str(self.test_counter) + " - " + msg + "\n")
 
     def check(self) -> None:
+        """
+        Top-level check method executing all checks.
+        """
         self.check_xml_structure()
         if not self.no_overlap:
             self.check_geometry()
@@ -51,6 +65,9 @@ class Checker:
         # - check that image files are not repeated
 
     def check_xml_structure(self) -> None:
+        """
+        Check the XML structure.
+        """
         # Check for presence of meta information.
         self.test_ok(
             self.doc.xpath("//meta[@name='ocr-system']") != [],
@@ -91,6 +108,9 @@ class Checker:
             )
 
     def check_geometry(self) -> None:
+        """
+        Check geometry-related aspects.
+        """
         for page in self.doc.xpath("//*[@class='ocr_page']"):
             # Check lines.
             objs = page.xpath("//*[@class='ocr_line']")

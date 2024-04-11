@@ -1,3 +1,7 @@
+"""
+Combine multiple hOCR documents into one.
+"""
+
 from __future__ import annotations
 
 import argparse
@@ -6,6 +10,12 @@ from lxml import etree, html
 
 
 def combine(filenames: list[str]) -> str:
+    """
+    Combine the given hOCR documents into one.
+
+    :param filenames: hOCR documents to combine.
+    :return: The combined hOCR document content.
+    """
     doc = html.parse(filenames[0])
     pages = doc.xpath("//*[@class='ocr_page']")
     container = pages[-1].getparent()

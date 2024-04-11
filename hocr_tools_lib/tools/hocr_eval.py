@@ -1,3 +1,7 @@
+"""
+Compute statistics about the general quality of the hOCR data.
+"""
+
 from __future__ import annotations
 
 import argparse
@@ -28,10 +32,24 @@ VPIX = 5
 def evaluate(
         truth: os.PathLike[str],
         actual: os.PathLike[str],
-        img_file: SupportsRead[bytes] | None,
+        img_file: SupportsRead[bytes] | None = None,
         debug: bool = False,
         verbose: bool = False
 ) -> tuple[Image.Image | None, int, int, int]:
+    """
+    Perform the evaluation.
+
+    :param truth: hOCR file with ground truth.
+    :param actual: hOCR file with actual data.
+    :param img_file: Optional image file. If set, draw the bboxes of the lines
+                     onto it and save it to ``errors.png``.
+    :param debug: Log additional debug information.
+    :param verbose: Log additional error data.
+    :return: The image with the bboxes, the number of segmentation errors (expected
+             and actual bboxes not similar enough), the number of OCR segmentation
+             errors (number of differing characters due to segmentation) and the
+             number of OCR errors (number of differing characters).
+    """
     if img_file:
         im = Image.open(img_file)
         logger.info(
@@ -74,7 +92,8 @@ def evaluate(
             bbox_small = erode(bbox, tx[index], ty[index])
             candidates = [
                 (
-                    area(intersect(get_bbox(line), bbox)), get_bbox(line),
+                    area(intersect(get_bbox(line), bbox)),
+                    get_bbox(line),
                     get_text(line)
                 ) for line in actual_lines
             ]
@@ -92,7 +111,7 @@ def evaluate(
                 ):
                     tight_overlap = True
 
-            if tight_overlap == 0:
+            if tight_overlap is False:
                 if verbose:
                     logger.warning(
                         "segmentation_error: area_overlap = %s true_bbox %s",

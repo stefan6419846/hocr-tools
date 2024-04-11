@@ -60,6 +60,16 @@ Environment Variables:
 
 
 def extract_g1000(hocr: str, image_pattern: str, output_prefix: str) -> None:
+    """
+    Perform the extraction itself.
+
+    :param hocr: hOCR source file.
+    :param image_pattern: Either a glob pattern that results in a list of image
+                          files in order, or ``@filename`` for a file containing
+                          a list of image files in order.
+    :param output_prefix: Output images are of the form
+                          ``output_pattern % (pageno, lineno)``.
+    """
     if not os.path.exists(hocr):
         sys.stderr.write(hocr + ": not found")
         sys.exit(1)
@@ -79,6 +89,14 @@ def extract_g1000(hocr: str, image_pattern: str, output_prefix: str) -> None:
 
 
 def get_image_list(image_pattern: str) -> list[str]:
+    """
+    Get the list of images for the given pattern.
+
+    See :func:`~extract_g1000` for the format.
+
+    :param image_pattern: The input file pattern.
+    :return: The corresponding image files.
+    """
     if image_pattern[0] == "@":
         with open(image_pattern[1:]) as fd:
             image_list = fd.readlines()
@@ -91,18 +109,62 @@ def get_image_list(image_pattern: str) -> list[str]:
 
 @dataclass
 class Configuration:
+    """
+    Configuration for the configuration values.
+    """
+
     element: str = 'ocr_line'
+    """
+    hOCR element to look at.
+    """
+
     regex: str = '.'
+    """
+    The text for any transcription must match this pattern.
+    """
+
     min_len: int = 20
+    """
+    Minimum length of text to output the lines for.
+    """
+
     max_len: int = 50
+    """
+    Maximum length of text to output the lines for.
+    """
+
     dict_data: dict[str, int] | None = None
+    """
+    Optional: Custom dictionary to use for filtering the texts.
+    """
+
     dict_file: str = ''
+    """
+    Dictionary file holding a word in each line.
+    """
+
     max_lines: int = 1000000
+    """
+    Maximum number of lines for the output.
+    """
+
     pad: int = 2
+    """
+    Pad the bounding box by this number of pixels prior to extraction.
+    """
+
     output_format: str = 'png'
+    """
+    Format of the line image files.
+    """
 
 
 def get_configuration() -> Configuration:
+    """
+    Get the configuration from environment variables.
+
+    :return: The corresponding configuration.
+    """
     def set_value_if_available(key: str, name: str | None = None, parser: Callable[[str], Any] | None = None) -> None:
         name = name or key
         value_ = os.getenv(key)
@@ -137,6 +199,13 @@ def get_configuration() -> Configuration:
 
 
 def check_dict(dictionary: dict[str, Any], s: str) -> bool:
+    """
+    Check if all words of the given string are part of the dictionary.
+
+    :param dictionary: The dictionary to check inside.
+    :param s: The text whose words to check against the dictionary.
+    :return: Whether all words are part of the dictionary.
+    """
     if not dictionary:
         return True
     words = re.split(r'\W+', s)
@@ -149,12 +218,27 @@ def check_dict(dictionary: dict[str, Any], s: str) -> bool:
 
 
 def write_string(filename: str, text: str) -> None:
+    """
+    Write the given text to the given file.
+
+    :param filename: The file to write to.
+    :param text: The text to write.
+    """
     with open(filename, "wb") as stream:
         stream.write(text.encode("utf-8"))
 
 
 class DocumentHandler(xml.sax.handler.ContentHandler):
+    """
+    hOCR document handler.
+    """
+
     def __init__(self, output_pattern: str, image_list: list[str], configuration: Configuration) -> None:
+        """
+        :param output_pattern: The output pattern to use. See :func:`~extract_g1000` for details.
+        :param image_list: The list of images to use.
+        :param configuration: The configuration to use.
+        """
         super().__init__()
         self.element = configuration.element
         self.regex = configuration.regex

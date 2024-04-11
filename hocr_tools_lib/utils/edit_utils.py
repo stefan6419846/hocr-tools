@@ -2,6 +2,14 @@ from __future__ import annotations
 
 
 def edit_distance(a: str, b: str, threshold: int = 99999) -> int:
+    """
+    Determine the editing distance between the two strings.
+
+    :param a: The first string.
+    :param b: The second string.
+    :param threshold: Threshold on which to perform an early return.
+    :return: The editing distance.
+    """
     if a == b:
         return 0
     m = len(a)
@@ -36,4 +44,12 @@ def edit_distance(a: str, b: str, threshold: int = 99999) -> int:
 
 
 def remove_tex(text: str) -> str:
+    """
+    Remove TeX from the given string.
+
+    Currently not implemented, thus always returning the original input.
+
+    :param text: The string to clean.
+    :return: The cleaned string.
+    """
     return text

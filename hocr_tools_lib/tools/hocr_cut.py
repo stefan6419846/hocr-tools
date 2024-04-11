@@ -1,3 +1,9 @@
+"""
+Cut a page (horizontally) into two pages in the middle
+such that the most of the bounding boxes are separated
+nicely, e.g. cutting double pages or double columns.
+"""
+
 from __future__ import annotations
 
 import argparse
@@ -16,6 +22,17 @@ del logging
 
 
 def cut(hocr: os.PathLike[str], debug: bool = False) -> None:
+    """
+    Cut the given hOCR file.
+
+    Generates an image file for both columns with the same basename
+    as the input file, only adding the suffix `.left` and `.right`
+    before the extension.
+
+    :param hocr: hOCR file to cut.
+    :param debug: Create a third image file with the suffix `.cut`
+                  with some debugging output.
+    """
     doc = html.parse(hocr)
 
     pages = doc.xpath("//*[@class='ocr_page']")

@@ -42,7 +42,7 @@ class StdoutWrapper:
     """
     Wrapper around stdout that ensures 'bytes' data is decoded
     to 'latin1' (0x00 - 0xff) before writing out. This is necessary for
-    the invisible font to be injected as bytes but written out as a string.
+    the invisible font to be injected as bytes, but written out as a string.
     """
 
     def write(self, data: str | bytes, *args: Any, **kwargs: Any) -> None:
@@ -52,12 +52,20 @@ class StdoutWrapper:
 
 
 class NoImagesFoundError(RuntimeError):
+    """
+    Custom error class when no images could be found.
+    """
     pass
 
 
 def export_pdf(directory: str, default_dpi: int = 300, savefile: str | None = None) -> None:
     """
     Create a searchable PDF from a pile of HOCR + JPEG.
+
+    :param directory: The input directory to use.
+    :param default_dpi: The image resolution to use.
+    :param savefile: If set, save the PDF file to this file instead of
+                     displaying it on stdout.
     """
     images = sorted(glob.glob(os.path.join(directory, '*.jpg')))
     if len(images) == 0:
@@ -90,6 +98,11 @@ def export_pdf(directory: str, default_dpi: int = 300, savefile: str | None = No
 def add_text_layer(pdf: Canvas, image: str, height: float, dpi: int) -> None:
     """
     Draw an invisible text layer for OCR data.
+
+    :param pdf: The PDF canvas to add the layer to.
+    :param image: The image path to determine the hOCR file from.
+    :param height: The page height to use for positioning/scaling.
+    :param dpi: The resolution to use for positioning/scaling.
     """
     p1 = re.compile(r'bbox((\s+\d+){4})')
     p2 = re.compile(r'baseline((\s+[\d\.\-]+){2})')
@@ -143,6 +156,9 @@ def polyval(poly: list[float], x: float) -> float:
 
 
 def load_invisible_font() -> None:
+    """
+    Load the invisible font to use for rendering into `reportlab`.
+    """
     # This is a variant of the Mienai font as provided by Fredrick R. Brennan
     # at https://github.com/MFEK/Mienai.ttf
     # It has been edited with FontForge to explicitly set the PS font name.

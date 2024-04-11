@@ -4,6 +4,9 @@ from typing import cast, Tuple  # TODO: Drop `Tuple` after dropping Python 3.8.
 
 
 RectangleType = Tuple[float, float, float, float]
+"""
+Custom type for wrapping a simple rectangle.
+"""
 
 
 def intersect(u: RectangleType | None, v: RectangleType | None) -> RectangleType | None:
@@ -33,6 +36,10 @@ def overlaps(u: RectangleType | None, v: RectangleType | None) -> bool:
 
 
 def relative_overlap(u: RectangleType | None, v: RectangleType | None) -> float:
+    """
+    Relative overlap of the two rectangles, id est overlap in comparison to
+    larger rectangle area.
+    """
     m = max(area(u), area(v))
     i = area(intersect(u, v))
     return float(i) / m
@@ -42,6 +49,9 @@ def mostly_non_overlapping(
         boxes: list[RectangleType | None],
         significant_overlap: float = 0.2
 ) -> bool:
+    """
+    Check if the given boxes do not overlap more than the given threshold.
+    """
     for i in range(len(boxes)):
         for j in range(i + 1, len(boxes)):
             if relative_overlap(boxes[i], boxes[j]) > significant_overlap:
@@ -68,6 +78,9 @@ def height(u: RectangleType | None) -> float:
 
 
 def erode(u: RectangleType | None, tx: float, ty: float) -> RectangleType | None:
+    """
+    Erode the given rectangle with the given transformation factors.
+    """
     if u is None:
         return u
 

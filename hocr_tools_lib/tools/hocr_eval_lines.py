@@ -1,3 +1,8 @@
+"""
+Compute statistics about the quality of the geometric
+segmentation.
+"""
+
 from __future__ import annotations
 
 import argparse
@@ -21,6 +26,14 @@ def evaluate_lines(
         hfile: os.PathLike[str],
         verbose: bool = False
 ) -> tuple[int, int]:
+    """
+    Run the evaluation.
+
+    :param tfile: Text file with the true lines.
+    :param hfile: hOCR file with the actually recognized lines.
+    :param verbose: Whether to log additional information for each line.
+    :return: The number of segmentation and OCR errors.
+    """
     truth_lines = tfile.read().split('\n')
     actual_doc = html.parse(hfile)
     actual_lines = [
@@ -61,8 +74,7 @@ def evaluate_lines(
 def main() -> None:
     parser = argparse.ArgumentParser(
         description=(
-            "Compute statistics about the quality of the geometric "
-            "segmentation at the level of the given OCR element"
+            "Compute statistics about the quality of the geometric segmentation"
         )
     )
     parser.add_argument(

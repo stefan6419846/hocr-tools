@@ -1,5 +1,5 @@
 """
-Extract the images and text within all the ocr_line elements
+Extract the images and text within all the requested elements
 within the hOCR file.
 """
 
@@ -22,6 +22,18 @@ def extract_images(
         hocr: SupportsReadClose[str], basename: str, pattern: str = "line-%03d.png", element: str = "ocr_line",
         pad: str | None = None, unicode_dammit: bool = False
 ) -> None:
+    """
+    Extract the images from the given document.
+
+    :param hocr: hOCR file to use.
+    :param basename: Image directory.
+    :param pattern: Output file pattern to use.
+    :param element: hOCR element to look into.
+    :param pad: Extra padding for bounding box. If set, either one number for
+                all four sides or four numbers separated by a comma.
+    :param unicode_dammit: Attempt to use BeautifulSoup.UnicodeDammit for
+                           fixing encoding issues.
+    """
     padding = None
     if pad is not None:
         padding = ast.literal_eval("[" + pad + "]")

@@ -1,5 +1,5 @@
 """
-Extract the text within all the ocr_line elements within the hOCR file.
+Extract the text within all the ``ocr_line`` elements within the hOCR file.
 """
 
 from __future__ import annotations
@@ -14,6 +14,12 @@ from lxml import html
 
 
 def lines(hocr: os.PathLike[str]) -> Generator[str, None, None]:
+    """
+    Extract the lines from the given document.
+
+    :param hocr: hOCR file to extract from.
+    :return: The corresponding lines.
+    """
     doc = html.parse(hocr)
 
     for line in doc.xpath("//*[@class='ocr_line']"):

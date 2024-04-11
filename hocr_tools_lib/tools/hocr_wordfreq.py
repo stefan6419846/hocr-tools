@@ -1,3 +1,7 @@
+"""
+Calculate the word frequency inside an hOCR file.
+"""
+
 from __future__ import annotations
 
 import os
@@ -13,6 +17,16 @@ def word_frequencies(
         hocr_in: os.PathLike[str] | str, case_insensitive: bool = False, spaces: bool = False, dehyphenate: bool = False,
         max_hits: int = 10
 ) -> Generator[str, None, None]:
+    """
+    Determine the word frequencies.
+
+    :param hocr_in: hOCR file to analyze.
+    :param case_insensitive: Ignore the casing of the words.
+    :param spaces: Split on spaces only.
+    :param dehyphenate: Try to dehyphenate the text.
+    :param max_hits: Number of hits to return.
+    :return: Up to `max_hits` of the most used words.
+    """
     doc = html.parse(hocr_in)
     body = doc.find('body')
     assert body is not None
