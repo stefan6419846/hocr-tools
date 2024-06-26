@@ -98,3 +98,7 @@ namespaces = false
 [tool.mypy]
 strict = true
 files = "hocr_tools_lib/,tests/"
+
+[tool.codespell]
+check-hidden = true
+ignore-words-list = 'assertIn,'
