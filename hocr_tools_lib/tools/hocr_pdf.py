@@ -29,7 +29,11 @@ import sys
 import zlib
 from typing import Any
 
-from bidi.algorithm import get_display  # type: ignore[import-untyped]
+try:
+    from bidi import get_display
+except ImportError:
+    # For version < 0.5.
+    from bidi.algorithm import get_display  # type: ignore[import-untyped]
 from reportlab.pdfbase import pdfmetrics  # type: ignore[import-untyped]
 from reportlab.pdfbase.ttfonts import TTFont  # type: ignore[import-untyped]
 from reportlab.pdfgen.canvas import Canvas  # type: ignore[import-untyped]
