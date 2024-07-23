@@ -1,6 +1,9 @@
 # Development version
 
-* Fix deprecation warning from `lxml` in `hocr-wordfreq`.
+# Version 1.1.0 - 2024-07-23
+
+* Fix deprecation warning from `lxml` in `hocr_wordfreq`.
+* Ensure compatibility with `python-bidi>=0.5`, while keeping support for older versions.
 * Migrate from `setup.py` to `pyproject.toml`.
 * Add Read the Docs configuration and missing docs.
 
