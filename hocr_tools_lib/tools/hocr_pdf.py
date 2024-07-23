@@ -30,7 +30,7 @@ import zlib
 from typing import Any
 
 try:
-    from bidi import get_display
+    from bidi import get_display  # type: ignore[import-untyped]
 except ImportError:
     # For version < 0.5.
     from bidi.algorithm import get_display  # type: ignore[import-untyped]
