@@ -17,7 +17,7 @@ except ImportError:
     # For `lxml` support.
     class SupportsReadClose(SupportsRead[_T_co], Protocol[_T_co]):
         """
-        Type of file that supports reading closing.
+        Type of file that supports reading and closing.
 
         Mostly relevant for `lxml` support.
         """
