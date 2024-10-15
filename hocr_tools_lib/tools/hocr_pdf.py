@@ -122,7 +122,7 @@ def add_text_layer(pdf: Canvas, image: str, height: float, dpi: int) -> None:
             assert baseline_match is not None
             baseline_str = baseline_match.group(1).split()
             baseline: list[float] = [float(i) for i in baseline_str]
-        except AttributeError:
+        except (AssertionError, AttributeError):
             baseline = [0, 0]
         xpath_elements = './/*[@class="ocrx_word"]'
         if not (line.xpath('boolean(' + xpath_elements + ')')):
