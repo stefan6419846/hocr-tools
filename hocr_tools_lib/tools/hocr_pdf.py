@@ -89,8 +89,8 @@ def export_pdf(directory: str, default_dpi: int = 300, savefile: str | None = No
             dpi = im.info['dpi'][0]
         except KeyError:
             pass
-        width = w * 72 / dpi
-        height = h * 72 / dpi
+        width = int(w * 72 / dpi)
+        height = int(h * 72 / dpi)
         pdf.setPageSize((width, height))
         pdf.drawImage(image, 0, 0, width=width, height=height)
         add_text_layer(pdf, image, height, dpi)
