@@ -1,5 +1,8 @@
 # Development version
 
+* Gracefully handle hOCR files from `kraken` in `hocr_pdf`.
+* Deal with non-integer widths and heights in `hocr_pdf` which would previously lead to some white borders.
+
 # Version 1.1.0 - 2024-07-23
 
 * Fix deprecation warning from `lxml` in `hocr_wordfreq`.
