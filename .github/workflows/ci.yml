@@ -21,9 +21,6 @@ jobs:
     - name: apt update
       run:
         sudo apt-get update
-    - name: apt install pdfgrep
-      run:
-        sudo apt-get install pdfgrep
     - name: prepare pip
       run:
         python -m pip install --upgrade pip wheel
