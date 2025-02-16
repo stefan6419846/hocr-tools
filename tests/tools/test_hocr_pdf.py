@@ -72,6 +72,7 @@ class HocrPdfTestCase(TestCase):
             pdf_path = directory / f'{self.WORK}-saved.pdf'
             hocr_pdf.export_pdf(directory=str(directory), savefile=str(pdf_path))
             self._check_content(pdf_path, 'Hello World')
+            self._check_content(pdf_path, 'formé\nuuuuu')
 
     def test_export_pdf__page_size(self) -> None:
         with TemporaryDirectory() as temp_directory:
