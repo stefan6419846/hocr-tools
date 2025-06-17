@@ -2,6 +2,7 @@
 
 * Gracefully handle hOCR files from `kraken` in `hocr_pdf`.
 * Deal with non-integer widths and heights in `hocr_pdf` which would previously lead to some white borders.
+* Remove unused and untested `hocr_extract_g1000` tool.
 
 # Version 1.1.0 - 2024-07-23
 
@@ -13,7 +14,7 @@
 # Version 1.0.3 - 2024-03-18
 
 * Add type hints.
-* Fix `hocr_pdf` for `reportlab>=4.1.0`, which would not render the text any more.
+* Fix `hocr_pdf` for `reportlab>=4.1.0`, which would not render the text anymore.
 
 # Version 1.0.2 - 2023-12-29
 
