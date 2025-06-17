@@ -37,13 +37,6 @@ hocr_tools_lib\.tools\.hocr_eval
 .. automodule:: hocr_tools_lib.tools.hocr_eval
    :members:
 
-hocr_tools_lib\.tools\.hocr_extract_g1000
------------------------------------------
-
-.. automodule:: hocr_tools_lib.tools.hocr_extract_g1000
-   :members:
-   :exclude-members: startDocument,characters,endDocument,endElement,startElement
-
 hocr_tools_lib\.tools\.hocr_extract_images
 ------------------------------------------
 
