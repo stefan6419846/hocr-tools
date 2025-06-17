@@ -107,10 +107,6 @@ It works by aligning segmentation components geometrically, and for each
 segmentation component that can be aligned, computing the string edit distance
 of the text the segmentation component contains.
 
-### hocr-extract-g1000
-
-Extract lines from [Google 1000 book sample](http://commondatastorage.googleapis.com/books/icdar2007/README.txt)
-
 ### hocr-extract-images
 
 ```

@@ -99,7 +99,7 @@ def check_bad_partition(boxes: list[RectangleType | None], significant_overlap: 
 def evaluate_geometries(
         truth: os.PathLike[str], actual: os.PathLike[str], element: str = 'ocr_line',
         significant_overlap: float = 0.1, close_match: float = 0.9
-) -> Generator[tuple[Boxstats, Boxstats], None, None]:
+) -> Generator[tuple[Boxstats, Boxstats]]:
     """
     Evaluate the geometries for the given files.
 

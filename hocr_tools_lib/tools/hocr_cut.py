@@ -46,7 +46,7 @@ def cut(hocr: os.PathLike[str], debug: bool = False) -> None:
             debug_image = Image.open(filename)
             dr = ImageDraw.Draw(debug_image)
             image_found = True
-        except IOError:
+        except OSError:
             logger.warning("Warning: Image %s not found!", filename)
             debug = False
             image_found = False
