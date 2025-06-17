@@ -13,7 +13,7 @@ from typing import Generator
 from lxml import html
 
 
-def lines(hocr: os.PathLike[str]) -> Generator[str, None, None]:
+def lines(hocr: os.PathLike[str]) -> Generator[str]:
     """
     Extract the lines from the given document.
 

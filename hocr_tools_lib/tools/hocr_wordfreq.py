@@ -16,7 +16,7 @@ from lxml import html
 def word_frequencies(
         hocr_in: os.PathLike[str] | str, case_insensitive: bool = False, spaces: bool = False, dehyphenate: bool = False,
         max_hits: int = 10
-) -> Generator[str, None, None]:
+) -> Generator[str]:
     """
     Determine the word frequencies.
 
