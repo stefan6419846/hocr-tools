@@ -46,18 +46,18 @@ def merge_dc(dc: os.PathLike[str], hocr: os.PathLike[str]) -> bytes:
     )
     for node in dc_nodes:
         node_tag = re.sub(
-            r'^{http://purl.org/dc/elements/1.1/}', 'dc:', node.tag
+            r"^{http://purl.org/dc/elements/1.1/}", "dc:", node.tag
         )
         if node_tag in DC_KNOWN:
-            name = re.sub(r'^dc:', 'DC.', node_tag)
+            name = re.sub(r"^dc:", "DC.", node_tag)
             value = get_text(node)
             value = re.sub("[\t\r\n'\"]", " ", value).strip()
             value = value[:500]
             hnode = etree.Element(
-                "meta", nsmap={'DC': 'http://purl.org/dc/elements/1.1'}
+                "meta", nsmap={"DC": "http://purl.org/dc/elements/1.1"}
             )
-            hnode.attrib['name'] = name
-            hnode.attrib['content'] = value
+            hnode.attrib["name"] = name
+            hnode.attrib["content"] = value
             hocr_meta.append(hnode)
 
     return etree.tostring(hocr_doc, pretty_print=True)
@@ -70,9 +70,9 @@ def main() -> None:
     parser.add_argument(
         "dc",
         help="XML file with Dublin Core metadata",
-        type=argparse.FileType('r')
+        type=argparse.FileType("r")
     )
-    parser.add_argument("hocr", help="hOCR file", type=argparse.FileType('r'))
+    parser.add_argument("hocr", help="hOCR file", type=argparse.FileType("r"))
     args = parser.parse_args()
 
     merged = merge_dc(dc=args.dc, hocr=args.hocr)

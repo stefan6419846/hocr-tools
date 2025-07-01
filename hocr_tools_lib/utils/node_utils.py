@@ -17,10 +17,10 @@ def get_prop(node: HtmlElement, name: str, strip_value: bool = False) -> str | N
     :param strip_value: Whether to strip single quotation marks.
     :return: The requested property, or ``None`` if not found.
     """
-    title = node.get('title')
+    title = node.get("title")
     if not title:
         return None
-    props = title.split(';')
+    props = title.split(";")
     for prop in props:
         key, args = prop.split(None, 1)
         if strip_value:
@@ -37,7 +37,7 @@ def get_bbox(node: HtmlElement) -> RectangleType | None:
     :param node: The node to run on.
     :return: The bounding box, or ``None`` if not found.
     """
-    bbox = get_prop(node, 'bbox')
+    bbox = get_prop(node, "bbox")
     if not bbox:
         return None
     return cast(
@@ -54,5 +54,5 @@ def get_text(node: HtmlElement) -> str:
     :return: The text of the given node.
     """
     text_nodes = node.xpath(".//text()")
-    s = "".join([text for text in text_nodes])
-    return re.sub(r'\s+', ' ', s)
+    s = "".join(text for text in text_nodes)
+    return re.sub(r"\s+", " ", s)

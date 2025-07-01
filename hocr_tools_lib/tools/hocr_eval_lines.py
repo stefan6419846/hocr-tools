@@ -34,7 +34,7 @@ def evaluate_lines(
     :param verbose: Whether to log additional information for each line.
     :return: The number of segmentation and OCR errors.
     """
-    truth_lines = tfile.read().split('\n')
+    truth_lines = tfile.read().split("\n")
     actual_doc = html.parse(hfile)
     actual_lines = [
         get_text(node) for node in actual_doc.xpath("//*[@class='ocr_line']")
@@ -45,7 +45,7 @@ def evaluate_lines(
     actual_lines = [normalize(s) for s in actual_lines]
     actual_lines = [s for s in actual_lines if s != ""]
 
-    remaining = [] + truth_lines
+    remaining = [*truth_lines]
     ocr_errors = 0
     for actual_line in actual_lines:
         min_d = 999999
@@ -58,8 +58,8 @@ def evaluate_lines(
                 min_i = index
         if verbose and min_d > 0:
             logger.info("distance %s", min_d)
-            logger.info("\t%s" + actual_line)
-            logger.info("\t%s" + remaining[min_i])
+            logger.info("\t%s", actual_line)
+            logger.info("\t%s", remaining[min_i])
         assert min_i >= 0
         del remaining[min_i]
         ocr_errors += min_d
@@ -79,12 +79,12 @@ def main() -> None:
     )
     parser.add_argument(
         "tfile", help="text file with the true lines",
-        type=argparse.FileType('r')
+        type=argparse.FileType("r")
     )
     parser.add_argument(
         "hfile",
         help="hOCR file with the actually recognized lines",
-        type=argparse.FileType('r')
+        type=argparse.FileType("r")
     )
     parser.add_argument("-v", "--verbose", action="store_true")
     args = parser.parse_args()

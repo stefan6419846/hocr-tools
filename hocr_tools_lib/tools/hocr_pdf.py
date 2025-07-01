@@ -21,79 +21,60 @@ from __future__ import annotations
 
 import argparse
 import base64
-import glob
+import contextlib
 import io
-import os
 import re
 import sys
 import zlib
-from typing import Any
+from pathlib import Path
 
 try:
     from bidi import get_display  # type: ignore[import-untyped]
 except ImportError:
     # For version < 0.5.
     from bidi.algorithm import get_display  # type: ignore[import-untyped]
+from lxml import etree, html
+from PIL import Image
 from reportlab.pdfbase import pdfmetrics  # type: ignore[import-untyped]
 from reportlab.pdfbase.ttfonts import TTFont  # type: ignore[import-untyped]
 from reportlab.pdfgen.canvas import Canvas  # type: ignore[import-untyped]
-
-from lxml import etree, html
-from PIL import Image
-
-
-class StdoutWrapper:
-    """
-    Wrapper around stdout that ensures 'bytes' data is decoded
-    to 'latin1' (0x00 - 0xff) before writing out. This is necessary for
-    the invisible font to be injected as bytes, but written out as a string.
-    """
-
-    def write(self, data: str | bytes, *args: Any, **kwargs: Any) -> None:
-        if isinstance(data, bytes):
-            data = data.decode('latin1')
-        sys.stdout.write(data)
 
 
 class NoImagesFoundError(RuntimeError):
     """
     Custom error class when no images could be found.
     """
-    pass
 
 
-def export_pdf(directory: str, default_dpi: int = 300, savefile: str | None = None) -> None:
+def export_pdf(directory: str | Path, savefile: str | Path, default_dpi: int = 300) -> None:
     """
     Create a searchable PDF from a pile of HOCR + JPEG.
 
     :param directory: The input directory to use.
     :param default_dpi: The image resolution to use.
-    :param savefile: If set, save the PDF file to this file instead of
-                     displaying it on stdout.
+    :param savefile: Save the PDF file to this file.
     """
-    images = sorted(glob.glob(os.path.join(directory, '*.jpg')))
+    images = sorted(Path(directory).glob("*.jpg"))
     if len(images) == 0:
         raise NoImagesFoundError(
             f"WARNING: No JPG images found in the folder {directory}"
             "\nScript cannot proceed without them and will terminate now.\n"
         )
     load_invisible_font()
-    pdf = Canvas(savefile if savefile else StdoutWrapper(), pageCompression=1)
-    pdf.setCreator('hocr-tools')
-    pdf.setTitle(os.path.basename(directory))
+    pdf = Canvas(str(savefile), pageCompression=1)
+    pdf.setCreator("hocr-tools")
+    pdf.setTitle(Path(directory).name)
     dpi = default_dpi
     for image in images:
         im = Image.open(image)
         w, h = im.size
-        try:
-            dpi = im.info['dpi'][0]
-        except KeyError:
-            pass
+        with contextlib.suppress(KeyError):
+            dpi = im.info["dpi"][0]
         width = int(w * 72 / dpi)
         height = int(h * 72 / dpi)
         pdf.setPageSize((width, height))
         pdf.drawImage(image, 0, 0, width=width, height=height)
-        add_text_layer(pdf, image, height, dpi)
+        add_text_layer(pdf, str(image), height, dpi)
         pdf.showPage()
         im.close()
     pdf.save()
@@ -108,35 +89,35 @@ def add_text_layer(pdf: Canvas, image: str, height: float, dpi: int) -> None:
     :param height: The page height to use for positioning/scaling.
     :param dpi: The resolution to use for positioning/scaling.
     """
-    p1 = re.compile(r'bbox((\s+\d+){4})')
-    p2 = re.compile(r'baseline((\s+[\d\.\-]+){2})')
-    hocr_file = os.path.splitext(image)[0] + ".hocr"
+    p1 = re.compile(r"bbox((\s+\d+){4})")
+    p2 = re.compile(r"baseline((\s+[\d.\-]+){2})")
+    hocr_file = Path(image).with_suffix(".hocr")
     hocr = etree.parse(hocr_file, html.XHTMLParser())
     for line in hocr.xpath('//*[@class="ocr_line"]'):
-        line_box_match = p1.search(line.attrib['title'])
+        line_box_match = p1.search(line.attrib["title"])
         assert line_box_match is not None
         line_box_str = line_box_match.group(1).split()
         line_box: list[float] = [float(i) for i in line_box_str]
         try:
-            baseline_match = p2.search(line.attrib['title'])
+            baseline_match = p2.search(line.attrib["title"])
             assert baseline_match is not None
             baseline_str = baseline_match.group(1).split()
             baseline: list[float] = [float(i) for i in baseline_str]
         except (AssertionError, AttributeError):
             baseline = [0, 0]
         xpath_elements = './/*[@class="ocrx_word"]'
-        if not (line.xpath('boolean(' + xpath_elements + ')')):
+        if not (line.xpath("boolean(" + xpath_elements + ")")):
             # If there are no words elements present, we switch to lines
             # as elements.
-            xpath_elements = '.'
+            xpath_elements = "."
         for word in line.xpath(xpath_elements):
             rawtext = word.text_content().strip()
-            if rawtext == '':
+            if rawtext == "":
                 continue
-            font_width = pdf.stringWidth(rawtext, 'invisible', 8)
+            font_width = pdf.stringWidth(rawtext, "invisible", 8)
             if font_width <= 0:
                 continue
-            box_match = p1.search(word.attrib['title'])
+            box_match = p1.search(word.attrib["title"])
             assert box_match is not None
             box_str = box_match.group(1).split()
             box: list[float] = [float(i) for i in box_str]
@@ -146,7 +127,7 @@ def add_text_layer(pdf: Canvas, image: str, height: float, dpi: int) -> None:
             ) + line_box[3]
             text = pdf.beginText()
             text.setTextRenderMode(3)  # Double invisible.
-            text.setFont('invisible', 8)
+            text.setFont("invisible", 8)
             text.setTextOrigin(box[0] * 72 / dpi, height - b * 72 / dpi)
             box_width = (box[2] - box[0]) * 72 / dpi
             text.setHorizScale(100.0 * box_width / font_width)
@@ -189,8 +170,21 @@ KgsVW+2M2WxlpRCU3ORw4hBiqznoChwU9h0hIYUVfbVUSFA62YrLeYV8w+Htqyuo+lEPT1hqXqhb
 """
     uncompressed = bytearray(zlib.decompress(base64.b64decode(font)))
     ttf = io.BytesIO(uncompressed)
-    ttf.name = '(invisible.ttf)'
-    pdfmetrics.registerFont(TTFont('invisible', ttf))
+    ttf.name = "(invisible.ttf)"
+    font = TTFont("invisible", ttf)
+
+    # Dirty workaround for https://github.com/stefan6419846/hocr-tools/issues/31
+    # Background: The code will check if the glyph is defined and otherwise append
+    # `\000` to the base character, which breaks for accented characters. I do know
+    # why *reportlab* does this, thus work around this for now by defining placeholder
+    # entries for all missing code points, with the only effect being that the parser
+    # now handles accented characters correctly.
+    char_to_glyph = font.face.charToGlyph
+    for i in range(65536):
+        if i not in char_to_glyph:
+            char_to_glyph[i] = 0
+
+    pdfmetrics.registerFont(font)
 
 
 def main() -> None:
@@ -203,13 +197,16 @@ def main() -> None:
             "directory with the hOCR and JPEG files (corresponding "
             "JPEG and hOCR files have to have the same name with "
             "their respective file ending)"
-        )
+        ),
+        type=Path,
     )
     parser.add_argument(
         "--savefile",
-        help="Save to this file instead of outputting to stdout"
+        help="Save to this file",
+        required=True,
+        type=Path,
     )
     args = parser.parse_args()
-    if not os.path.isdir(args.imgdir):
+    if not args.imgdir.is_dir():
         sys.exit(f"ERROR: Given path '{args.imgdir}' is not a directory")
     export_pdf(directory=args.imgdir, default_dpi=300, savefile=args.savefile)

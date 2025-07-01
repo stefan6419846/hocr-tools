@@ -115,28 +115,28 @@ class Checker:
             # Check lines.
             objs = page.xpath("//*[@class='ocr_line']")
             line_bboxes = [
-                get_bbox(obj) for obj in objs if get_prop(obj, 'bbox')
+                get_bbox(obj) for obj in objs if get_prop(obj, "bbox")
             ]
             self.test_ok(
                 mostly_non_overlapping(line_bboxes),
-                'mostly_nonoverlapping/line'
+                "mostly_nonoverlapping/line"
             )
             # Check paragraphs.
             objs = page.xpath("//*[@class='ocr_par']")
             par_bboxes = [
-                get_bbox(obj) for obj in objs if get_prop(obj, 'bbox')
+                get_bbox(obj) for obj in objs if get_prop(obj, "bbox")
             ]
             self.test_ok(
-                mostly_non_overlapping(par_bboxes), 'mostly_nonoverlapping/par'
+                mostly_non_overlapping(par_bboxes), "mostly_nonoverlapping/par"
             )
             # Check careas.
             objs = page.xpath("//*[@class='ocr_carea']")
             carea_bboxes = [
-                get_bbox(obj) for obj in objs if get_prop(obj, 'bbox')
+                get_bbox(obj) for obj in objs if get_prop(obj, "bbox")
             ]
             self.test_ok(
                 mostly_non_overlapping(carea_bboxes),
-                'mostly_nonoverlapping/carea'
+                "mostly_nonoverlapping/carea"
             )
 
 
@@ -149,8 +149,8 @@ def main() -> None:
     parser.add_argument(
         "file",
         help="hOCR file to check",
-        type=argparse.FileType('r'),
-        nargs='?',
+        type=argparse.FileType("r"),
+        nargs="?",
         default=sys.stdin
     )
     parser.add_argument(

@@ -8,7 +8,7 @@ import argparse
 import os
 import re
 import sys
-from typing import Generator
+from collections.abc import Generator
 
 from lxml import html
 
@@ -23,18 +23,18 @@ def lines(hocr: os.PathLike[str]) -> Generator[str]:
     doc = html.parse(hocr)
 
     for line in doc.xpath("//*[@class='ocr_line']"):
-        yield re.sub(r'\s+', '\x20', line.text_content()).strip()
+        yield re.sub(r"\s+", "\x20", line.text_content()).strip()
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(
         description=(
-            'extract the text within all the ocr_line elements '
-            'within the hOCR file'
+            "extract the text within all the ocr_line elements "
+            "within the hOCR file"
         )
     )
-    parser.add_argument('file', nargs='?', default=sys.stdin)
+    parser.add_argument("file", nargs="?", default=sys.stdin)
     args = parser.parse_args()
 
     result = lines(hocr=args.file)
-    print('\n'.join(result))
+    print("\n".join(result))

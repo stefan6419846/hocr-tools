@@ -9,9 +9,9 @@ from typing import cast
 from unittest import TestCase as _TestCase
 
 if sys.version_info < (3, 10):
-    import importlib_resources  # noqa: F401
+    import importlib_resources
 else:
-    import importlib.resources as importlib_resources  # noqa: F401
+    import importlib.resources as importlib_resources
 
 
 class TestCase(_TestCase):
@@ -19,19 +19,19 @@ class TestCase(_TestCase):
     def get_data_file(cls, path: str) -> str:
         file_manager = ExitStack()
         atexit.register(file_manager.close)
-        reference = importlib_resources.files('tests.data') / path
+        reference = importlib_resources.files("tests.data") / path
         return str(file_manager.enter_context(
             importlib_resources.as_file(reference)
         ))
 
     @classmethod
     def get_data_content(cls, path: str) -> bytes:
-        reference = importlib_resources.files('tests.data') / path
+        reference = importlib_resources.files("tests.data") / path
         return cast(bytes, reference.read_bytes())  # type: ignore[redundant-cast,unused-ignore]  # `cast` only required for Python < 3.10.
 
     @classmethod
     def get_data_directory(cls) -> Path:
-        first_file = next(importlib_resources.files('tests.data').iterdir())
+        first_file = next(importlib_resources.files("tests.data").iterdir())
         return Path(cls.get_data_file(first_file.name)).parent
 
     @classmethod
@@ -47,14 +47,8 @@ if sys.version_info < (3, 11):  # pragma: no cover
     # Backport new functionality.
     import contextlib
     import os
-    from typing import Any
 
-    if sys.version_info < (3, 9):
-        _SUPERCLASS = contextlib.AbstractContextManager
-    else:
-        _SUPERCLASS = contextlib.AbstractContextManager[None]
-
-    class chdir(_SUPERCLASS):  # noqa: N801
+    class chdir(contextlib.AbstractContextManager[None]):  # noqa: N801
         def __init__(self, path: os.PathLike[str] | str) -> None:
             self.path = path
             self._old_cwd: list[str] = []
@@ -63,13 +57,13 @@ if sys.version_info < (3, 11):  # pragma: no cover
             self._old_cwd.append(os.getcwd())
             os.chdir(self.path)
 
-        def __exit__(self, *excinfo: Any) -> None:
+        def __exit__(self, *excinfo: object) -> None:
             os.chdir(self._old_cwd.pop())
 else:  # pragma: no cover
-    from contextlib import chdir  # noqa: F401
+    from contextlib import chdir
 
 
 __all__ = [
-    'TestCase',
-    'chdir',
+    "TestCase",
+    "chdir",
 ]

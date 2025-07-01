@@ -1,9 +1,7 @@
 from __future__ import annotations
 
-from typing import cast, Tuple  # TODO: Drop `Tuple` after dropping Python 3.8.
 
-
-RectangleType = Tuple[float, float, float, float]
+RectangleType = tuple[float, float, float, float]
 """
 Custom type for wrapping a simple rectangle.
 """
@@ -15,8 +13,7 @@ def intersect(u: RectangleType | None, v: RectangleType | None) -> RectangleType
     """
     if u is None or v is None:
         return None
-    r = (max(u[0], v[0]), max(u[1], v[1]), min(u[2], v[2]), min(u[3], v[3]))
-    return r
+    return (max(u[0], v[0]), max(u[1], v[1]), min(u[2], v[2]), min(u[3], v[3]))
 
 
 def area(u: RectangleType | None) -> float:
@@ -86,7 +83,4 @@ def erode(u: RectangleType | None, tx: float, ty: float) -> RectangleType | None
 
     x = 2 * tx + 1
     y = 2 * ty + 1
-    return cast(
-        RectangleType,
-        tuple([u[0] + x, u[1] + y, u[2] - x, u[3] - y])
-    )
+    return u[0] + x, u[1] + y, u[2] - x, u[3] - y

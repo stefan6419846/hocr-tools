@@ -4,11 +4,12 @@ Calculate the word frequency inside an hOCR file.
 
 from __future__ import annotations
 
-import os
-import sys
-import re
 import argparse
-from typing import cast, Callable, Generator
+import os
+import re
+import sys
+from collections.abc import Callable, Generator
+from typing import cast
 
 from lxml import html
 
@@ -28,7 +29,7 @@ def word_frequencies(
     :return: Up to `max_hits` of the most used words.
     """
     doc = html.parse(hocr_in)
-    body = doc.find('body')
+    body = doc.find("body")
     assert body is not None
     text = body.text_content().strip()
     if case_insensitive:
@@ -41,11 +42,11 @@ def word_frequencies(
         # Replace line breaks with a space.
         text = re.sub(r"\r?\n", " ", text)
     word_counts: dict[str, int] = {}
-    separators = re.compile(r'\W+', re.UNICODE)
+    separators = re.compile(r"\W+", re.UNICODE)
     if spaces:
-        separators = re.compile(r'\s+', re.UNICODE)
+        separators = re.compile(r"\s+", re.UNICODE)
     for word in separators.split(text):
-        if word == '':
+        if word == "":
             continue
         word_counts[word] = word_counts[word] + 1 if word in word_counts else 1
 
@@ -59,41 +60,41 @@ def word_frequencies(
 
 def main() -> None:
     parser = argparse.ArgumentParser(
-        description='Calculate word frequency in an hOCR file'
+        description="Calculate word frequency in an hOCR file"
     )
     parser.add_argument(
-        '-i',
-        '--case-insensitive',
-        action='store_true',
+        "-i",
+        "--case-insensitive",
+        action="store_true",
         default=False,
         help="ignore case"
     )
     parser.add_argument(
-        '-s',
-        '--spaces',
-        action='store_true',
+        "-s",
+        "--spaces",
+        action="store_true",
         default=False,
         help="split on spaces only"
     )
     parser.add_argument(
-        '-y',
-        '--dehyphenate',
-        action='store_true',
+        "-y",
+        "--dehyphenate",
+        action="store_true",
         default=False,
         help="try to dehyphenate the text before analysis"
     )
     parser.add_argument(
-        '-n',
-        '--max',
+        "-n",
+        "--max",
         type=int,
         default=10,
         help="number of hits (default: %(default)s)"
     )
     parser.add_argument(
-        'hocr_in',
+        "hocr_in",
         help="hOCR file to count frequency for (default: standard input)",
-        type=argparse.FileType('r'),
-        nargs='?',
+        type=argparse.FileType("r"),
+        nargs="?",
         default=sys.stdin
     )
     args = parser.parse_args()
@@ -102,6 +103,6 @@ def main() -> None:
         hocr_in=args.hocr_in, case_insensitive=args.case_insensitive,
         spaces=args.spaces, dehyphenate=args.dehyphenate, max_hits=args.max
     )
-    print('\n'.join(results))
+    print("\n".join(results))
 
     args.hocr_in.close()

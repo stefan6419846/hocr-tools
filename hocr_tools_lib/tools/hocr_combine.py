@@ -26,7 +26,7 @@ def combine(filenames: list[str]) -> str:
         for page in pages:
             container.append(page)
 
-    return etree.tostring(doc, pretty_print=True).decode('UTF-8')
+    return etree.tostring(doc, pretty_print=True).decode("UTF-8")
 
 
 def main() -> None:
@@ -34,7 +34,7 @@ def main() -> None:
         description="combine multiple hOCR documents into one"
     )
     parser.add_argument(
-        "filenames", help="hOCR files", nargs='+'
+        "filenames", help="hOCR files", nargs="+"
     )
     args = parser.parse_args()
 

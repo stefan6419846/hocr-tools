@@ -7,9 +7,9 @@ from __future__ import annotations
 
 import argparse
 import ast
-import os
 import sys
-from typing import cast, Tuple  # TODO: Drop `Tuple` after dropping Python 3.8.
+from pathlib import Path
+from typing import cast
 
 from lxml import html
 from PIL import Image
@@ -41,34 +41,36 @@ def extract_images(
         if len(padding) == 1:
             padding = padding * 4
 
-    txt_pattern = pattern + '.txt'
-    if pattern[-4] == '.':
-        txt_pattern = pattern[:-3] + 'txt'
+    txt_pattern = pattern + ".txt"
+    if pattern[-4] == ".":
+        txt_pattern = pattern[:-3] + "txt"
 
     if unicode_dammit:
         from bs4 import UnicodeDammit  # type: ignore[attr-defined]
         content = hocr.read()
         doc = UnicodeDammit(content, is_html=True)
         parser = html.HTMLParser(encoding=doc.original_encoding)
-        doc = html.document_fromstring(content.encode('UTF-8'), parser=parser)
+        doc = html.document_fromstring(content.encode("UTF-8"), parser=parser)
     else:
         doc = html.parse(hocr)
 
     pages = doc.xpath('//*[@class="ocr_page"]')
     for page in pages:
-        image_name = get_prop(page, 'file', strip_value=True)
+        image_name = get_prop(page, "file", strip_value=True)
         if not image_name:
-            image_name = get_prop(page, 'image', strip_value=True)
+            image_name = get_prop(page, "image", strip_value=True)
             assert image_name
         if basename:
-            image_name = os.path.join(basename, os.path.basename(image_name))
-        if not os.path.exists(image_name):
-            raise FileNotFoundError(image_name)
+            image_path = Path(basename, Path(image_name).name)
+        else:
+            image_path = Path(image_name)
+        if not Path(image_path).exists():
+            raise FileNotFoundError(image_path)
         image = Image.open(image_name)
         lines = page.xpath(f"//*[@class='{element}']")
         line_count = 1
         for line in lines:
-            bbox_prop = get_prop(line, 'bbox')
+            bbox_prop = get_prop(line, "bbox")
             assert bbox_prop
             bbox = [int(x) for x in bbox_prop.split()]
             if padding is not None:
@@ -79,12 +81,10 @@ def extract_images(
                 bbox[3] = min(bbox[3] + padding[3], h)
             if bbox[0] > bbox[2] or bbox[1] >= bbox[3]:
                 continue
-            line_image = image.crop(cast(Tuple[int, int, int, int], tuple(bbox)))
+            line_image = image.crop(cast(tuple[int, int, int, int], tuple(bbox)))
             line_image.save(pattern % line_count)
-            with open(
-                    txt_pattern % line_count, mode='w', encoding='utf-8'
-            ) as fd:
-                fd.write(get_text(line))
+            txt_path = Path(txt_pattern % line_count)
+            txt_path.write_text(get_text(line), encoding="utf-8")
             line_count += 1
         image.close()
 
@@ -99,8 +99,8 @@ def main() -> None:
     parser.add_argument(
         "file",
         help="hOCR file",
-        type=argparse.FileType('r'),
-        nargs='?',
+        type=argparse.FileType("r"),
+        nargs="?",
         default=sys.stdin
     )
     parser.add_argument("-b", "--basename", help="image-dir")
