@@ -9,7 +9,7 @@ jobs:
   main:
     strategy:
       matrix:
-        python: ['3.8', '3.9', '3.10', '3.11', '3.12', '3.13']
+        python: ['3.9', '3.10', '3.11', '3.12', '3.13']
     runs-on: ubuntu-latest
     name: Python ${{ matrix.python }}
     steps:
@@ -36,7 +36,6 @@ jobs:
     - name: mypy
       run:
         mypy
-      if: matrix.python != '3.8'
     - name: codespell
       run:
         codespell * .github/ --skip *.html

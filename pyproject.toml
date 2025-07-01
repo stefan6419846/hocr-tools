@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 name = "hocr-tools-lib"
 description = "Advanced tools for hOCR integration (library version)"
 version = "1.1.0"
-license = {text = "Apache-2.0"}
+license = "Apache-2.0"
 readme = {file = "README.md", content-type = "text/markdown"}
 authors = [
     {name = "Thomas Breuel"},
@@ -16,7 +16,6 @@ classifiers = [
     "Development Status :: 5 - Production/Stable",
     "Environment :: Console",
     "Intended Audience :: End Users/Desktop",
-    "License :: OSI Approved :: Apache Software License",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3 :: Only",
     "Topic :: Multimedia :: Graphics :: Graphics Conversion",
