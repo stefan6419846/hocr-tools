@@ -42,9 +42,9 @@ class HocrCutTestCase(TestCase):
             self.get_data_file_copy("litver.png", directory=temp_directory)
             directory = filename.parent
 
-            # stdout = StringIO()
-            # with contextlib.redirect_stdout(stdout):
-            hocr_cut.cut(filename, debug=True)
+            stdout = StringIO()
+            with contextlib.redirect_stdout(stdout):
+                hocr_cut.cut(filename, debug=True)
 
             self.assertNotEqual(
                 b"",
