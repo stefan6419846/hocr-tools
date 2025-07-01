@@ -27,7 +27,6 @@ import os
 import re
 import sys
 import zlib
-from typing import Any
 
 try:
     from bidi import get_display  # type: ignore[import-untyped]
@@ -42,19 +41,6 @@ from lxml import etree, html
 from PIL import Image
 
 
-class StdoutWrapper:
-    """
-    Wrapper around stdout that ensures 'bytes' data is decoded
-    to 'latin1' (0x00 - 0xff) before writing out. This is necessary for
-    the invisible font to be injected as bytes, but written out as a string.
-    """
-
-    def write(self, data: str | bytes, *args: Any, **kwargs: Any) -> None:
-        if isinstance(data, bytes):
-            data = data.decode('latin1')
-        sys.stdout.write(data)
-
-
 class NoImagesFoundError(RuntimeError):
     """
     Custom error class when no images could be found.
@@ -62,14 +48,13 @@ class NoImagesFoundError(RuntimeError):
     pass
 
 
-def export_pdf(directory: str, default_dpi: int = 300, savefile: str | None = None) -> None:
+def export_pdf(directory: str, savefile: str, default_dpi: int = 300) -> None:
     """
     Create a searchable PDF from a pile of HOCR + JPEG.
 
     :param directory: The input directory to use.
     :param default_dpi: The image resolution to use.
-    :param savefile: If set, save the PDF file to this file instead of
-                     displaying it on stdout.
+    :param savefile: Save the PDF file to this file.
     """
     images = sorted(glob.glob(os.path.join(directory, '*.jpg')))
     if len(images) == 0:
@@ -78,7 +63,7 @@ def export_pdf(directory: str, default_dpi: int = 300, savefile: str | None = No
             "\nScript cannot proceed without them and will terminate now.\n"
         )
     load_invisible_font()
-    pdf = Canvas(savefile if savefile else StdoutWrapper(), pageCompression=1)
+    pdf = Canvas(savefile, pageCompression=1)
     pdf.setCreator('hocr-tools')
     pdf.setTitle(os.path.basename(directory))
     dpi = default_dpi
@@ -190,7 +175,20 @@ KgsVW+2M2WxlpRCU3ORw4hBiqznoChwU9h0hIYUVfbVUSFA62YrLeYV8w+Htqyuo+lEPT1hqXqhb
     uncompressed = bytearray(zlib.decompress(base64.b64decode(font)))
     ttf = io.BytesIO(uncompressed)
     ttf.name = '(invisible.ttf)'
-    pdfmetrics.registerFont(TTFont('invisible', ttf))
+    font = TTFont('invisible', ttf)
+
+    # Dirty workaround for https://github.com/stefan6419846/hocr-tools/issues/31
+    # Background: The code will check if the glyph is defined and otherwise append
+    # `\000` to the base character, which breaks for accented characters. I do know
+    # why *reportlab* does this, thus work around this for now by defining placeholder
+    # entries for all missing code points, with the only effect being that the parser
+    # now handles accented characters correctly.
+    char_to_glyph = font.face.charToGlyph
+    for i in range(65536):
+        if i not in char_to_glyph:
+            char_to_glyph[i] = 0
+
+    pdfmetrics.registerFont(font)
 
 
 def main() -> None:
@@ -207,7 +205,8 @@ def main() -> None:
     )
     parser.add_argument(
         "--savefile",
-        help="Save to this file instead of outputting to stdout"
+        help="Save to this file",
+        required=True,
     )
     args = parser.parse_args()
     if not os.path.isdir(args.imgdir):

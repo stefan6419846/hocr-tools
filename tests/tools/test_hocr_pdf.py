@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-import contextlib
-from io import StringIO
 from pathlib import Path
 from tempfile import TemporaryDirectory
 from unittest import mock
@@ -50,13 +48,6 @@ class HocrPdfTestCase(TestCase):
             self._download_files(directory)
 
             pdf_path = directory / f'{self.WORK}.pdf'
-            stdout = StringIO()
-            with contextlib.redirect_stdout(stdout):
-                hocr_pdf.export_pdf(directory=str(directory))
-            pdf_path.write_text(stdout.getvalue())
-            self._check_content(pdf_path, 'tribunali')
-
-            pdf_path = directory / f'{self.WORK}-saved.pdf'
             hocr_pdf.export_pdf(directory=str(directory), savefile=str(pdf_path))
             self._check_content(pdf_path, 'tribunali')
 
@@ -72,7 +63,7 @@ class HocrPdfTestCase(TestCase):
             pdf_path = directory / f'{self.WORK}-saved.pdf'
             hocr_pdf.export_pdf(directory=str(directory), savefile=str(pdf_path))
             self._check_content(pdf_path, 'Hello World')
-            # self._check_content(pdf_path, 'formé\nuuuuu')
+            self._check_content(pdf_path, 'formé\nuuuuu')
 
     def test_export_pdf__page_size(self) -> None:
         with TemporaryDirectory() as temp_directory:
@@ -96,7 +87,5 @@ class HocrPdfTestCase(TestCase):
             directory = Path(temp_directory)
             self._download_files(directory)
 
-            stdout = StringIO()
-            with mock.patch('sys.argv', ['hocr-pdf', str(directory)]):
-                with contextlib.redirect_stdout(stdout):
-                    hocr_pdf.main()
+            with mock.patch('sys.argv', ['hocr-pdf', str(directory), '--savefile', str(directory / 'output.pdf')]):
+                hocr_pdf.main()

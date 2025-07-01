@@ -2,6 +2,8 @@
 
 * Gracefully handle hOCR files from `kraken` in `hocr_pdf`.
 * Deal with non-integer widths and heights in `hocr_pdf` which would previously lead to some white borders.
+* Fix handling of accented characters in `hocr_pdf` due to a change in `reportlab>=4.0.9`.
+* Remove the stdout output option for `hocr_pdf` due to unexpected behavior.
 * Remove unused and untested `hocr_extract_g1000` tool.
 
 # Version 1.1.0 - 2024-07-23
