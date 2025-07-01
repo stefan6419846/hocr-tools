@@ -1,4 +1,6 @@
-# Development version
+# Development Version
+
+# Version 1.2.0 - 2025-07-01
 
 * Gracefully handle hOCR files from `kraken` in `hocr_pdf`.
 * Deal with non-integer widths and heights in `hocr_pdf` which would previously lead to some white borders.
