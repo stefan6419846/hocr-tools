@@ -7,13 +7,13 @@ from __future__ import annotations
 
 import argparse
 import os
+from collections.abc import Generator
 from dataclasses import dataclass
-from typing import Generator
 
 from lxml import html
 
 from hocr_tools_lib.utils.node_utils import get_bbox
-from hocr_tools_lib.utils.rectangle_utils import overlaps, relative_overlap, RectangleType
+from hocr_tools_lib.utils.rectangle_utils import RectangleType, overlaps, relative_overlap
 
 
 @dataclass
@@ -97,7 +97,7 @@ def check_bad_partition(boxes: list[RectangleType | None], significant_overlap: 
 
 
 def evaluate_geometries(
-        truth: os.PathLike[str], actual: os.PathLike[str], element: str = 'ocr_line',
+        truth: os.PathLike[str], actual: os.PathLike[str], element: str = "ocr_line",
         significant_overlap: float = 0.1, close_match: float = 0.9
 ) -> Generator[tuple[Boxstats, Boxstats]]:
     """
@@ -151,12 +151,12 @@ def main() -> None:
     )
     parser.add_argument(
         "truth", help="hOCR file with ground truth",
-        type=argparse.FileType('r')
+        type=argparse.FileType("r")
     )
     parser.add_argument(
         "actual",
         help="hOCR file from the actual recognition",
-        type=argparse.FileType('r')
+        type=argparse.FileType("r")
     )
     parser.add_argument(
         "-e",

@@ -16,7 +16,7 @@ class GetPropTestCase(TestCase):
         return html.fromstring(string)
 
     def test_strip_value(self) -> None:
-        for input_value in ["'alice_1.png'", '"alice_1.png"', 'alice_1.png']:
+        for input_value in ["'alice_1.png'", '"alice_1.png"', "alice_1.png"]:
             with self.subTest(input_value=input_value):
                 div = self.get_div(input_value)
-                self.assertEqual('alice_1.png', node_utils.get_prop(node=div, name='image', strip_value=True))
+                self.assertEqual("alice_1.png", node_utils.get_prop(node=div, name="image", strip_value=True))

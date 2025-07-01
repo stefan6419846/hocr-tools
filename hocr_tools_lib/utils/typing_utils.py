@@ -11,7 +11,7 @@ except ImportError:
         Type of file that supports reading.
         """
 
-        def read(self, __length: int = ...) -> _T_co:
+        def read(self, /, length: int = ...) -> _T_co:
             ...
 
     # For `lxml` support.

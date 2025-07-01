@@ -5,7 +5,7 @@
 * Fix handling of accented characters in `hocr_pdf` due to a change in `reportlab>=4.0.9`.
 * Remove the stdout output option for `hocr_pdf` due to unexpected behavior.
 * Remove unused and untested `hocr_extract_g1000` tool.
-* Drop support for Python < 3.9. The package might work, but testing stopped there.
+* Drop support for Python < 3.9.
 
 # Version 1.1.0 - 2024-07-23
 

@@ -18,7 +18,7 @@ def split(hocr: PathLike[str] | str, pattern: str = "base-%03d.html") -> None:
     :param hocr: hOCR file to split.
     :param pattern: Naming pattern for the output files.
     """
-    assert re.search('%[0-9]*d', pattern)
+    assert re.search("%[0-9]*d", pattern)
 
     doc = etree.parse(hocr, html.XHTMLParser())
     pages = doc.xpath("//*[@class='ocr_page']")
@@ -39,7 +39,7 @@ def main() -> None:
     parser = argparse.ArgumentParser(
         description="split a multipage hOCR file into single pages"
     )
-    parser.add_argument("file", help="hOCR file", type=argparse.FileType('r'))
+    parser.add_argument("file", help="hOCR file", type=argparse.FileType("r"))
     parser.add_argument(
         "pattern", help="naming pattern, e.g. 'base-%%03d.html'"
     )

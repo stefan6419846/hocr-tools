@@ -13,8 +13,7 @@ from PIL import Image, ImageDraw
 
 from hocr_tools_lib.utils.edit_utils import edit_distance, remove_tex
 from hocr_tools_lib.utils.node_utils import get_bbox, get_text
-from hocr_tools_lib.utils.rectangle_utils import area, erode, height, intersect, \
-    width
+from hocr_tools_lib.utils.rectangle_utils import area, erode, height, intersect, width
 from hocr_tools_lib.utils.text_utils import normalize
 from hocr_tools_lib.utils.typing_utils import SupportsRead
 
@@ -157,12 +156,12 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "truth", help="hOCR file with ground truth",
-        type=argparse.FileType('r')
+        type=argparse.FileType("r")
     )
     parser.add_argument(
         "actual",
         help="hOCR file from the actual recognition",
-        type=argparse.FileType('r')
+        type=argparse.FileType("r")
     )
     parser.add_argument("-d", "--debug", action="store_true")
     parser.add_argument("-v", "--verbose", action="store_true")
@@ -174,7 +173,7 @@ def main() -> None:
     #     "-o", "--significant_overlap", type=float, default=0.1,
     #     help="default: %(default)s"
     # )
-    parser.add_argument("-i", "--imgfile", type=argparse.FileType('r'))
+    parser.add_argument("-i", "--imgfile", type=argparse.FileType("r"))
     args = parser.parse_args()
 
     image, segmentation_errors, segmentation_ocr_errors, ocr_errors = evaluate(

@@ -10,10 +10,10 @@ class SmokeTests(TestCase):
     @classmethod
     def get_tool_list(cls) -> list[str]:
         base_directory = Path(__file__).parent.parent
-        base_directory = base_directory / 'hocr_tools_lib' / 'tools'
+        base_directory = base_directory / "hocr_tools_lib" / "tools"
         return [
-            path.stem.replace('_', '-') for path in base_directory.glob('*.py')
-            if path.stem.startswith('hocr_')
+            path.stem.replace("_", "-") for path in base_directory.glob("*.py")
+            if path.stem.startswith("hocr_")
         ]
 
     def test_help(self) -> None:
@@ -25,8 +25,8 @@ class SmokeTests(TestCase):
                     # Satisfy mypy.
                     continue
                 subprocess.check_call(
-                    [binary_path, '-h'], stdout=subprocess.PIPE
+                    [binary_path, "-h"], stdout=subprocess.PIPE
                 )
                 subprocess.check_call(
-                    [binary_path, '--help'], stdout=subprocess.PIPE
+                    [binary_path, "--help"], stdout=subprocess.PIPE
                 )
