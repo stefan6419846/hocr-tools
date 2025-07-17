@@ -206,7 +206,23 @@ def main() -> None:
         required=True,
         type=Path,
     )
+    parser.add_argument(
+        "--pillow-max-image-pixels",
+        help=(
+            "Maximum number of pixels to allow in `Pillow` before triggering decompression bomb warnings. "
+            "Either an integer or `none`. (Default: %(default)s)"
+        ),
+        required=False,
+        type=str,
+        default=Image.MAX_IMAGE_PIXELS,
+    )
+
     args = parser.parse_args()
+    if args.pillow_max_image_pixels.lower() == "none":
+        Image.MAX_IMAGE_PIXELS = None
+    else:
+        Image.MAX_IMAGE_PIXELS = int(args.pillow_max_image_pixels)
+
     if not args.imgdir.is_dir():
         sys.exit(f"ERROR: Given path '{args.imgdir}' is not a directory")
     export_pdf(directory=args.imgdir, default_dpi=300, savefile=args.savefile)
