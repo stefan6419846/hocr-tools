@@ -1,5 +1,7 @@
 # Development Version
 
+* Allow setting the maximum image pixel size for *Pillow* in `hocr_pdf`.
+
 # Version 1.2.0 - 2025-07-01
 
 * Gracefully handle hOCR files from `kraken` in `hocr_pdf`.
