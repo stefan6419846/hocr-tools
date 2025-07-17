@@ -214,7 +214,7 @@ def main() -> None:
         ),
         required=False,
         type=str,
-        default=Image.MAX_IMAGE_PIXELS,
+        default=str(Image.MAX_IMAGE_PIXELS),
     )
 
     args = parser.parse_args()
