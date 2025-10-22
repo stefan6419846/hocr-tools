@@ -4,14 +4,9 @@ import atexit
 import shutil
 import sys
 from contextlib import ExitStack
+from importlib import resources
 from pathlib import Path
-from typing import cast
 from unittest import TestCase as _TestCase
-
-if sys.version_info < (3, 10):
-    import importlib_resources
-else:
-    import importlib.resources as importlib_resources
 
 
 class TestCase(_TestCase):
@@ -19,19 +14,19 @@ class TestCase(_TestCase):
     def get_data_file(cls, path: str) -> str:
         file_manager = ExitStack()
         atexit.register(file_manager.close)
-        reference = importlib_resources.files("tests.data") / path
+        reference = resources.files("tests.data") / path
         return str(file_manager.enter_context(
-            importlib_resources.as_file(reference)
+            resources.as_file(reference)
         ))
 
     @classmethod
     def get_data_content(cls, path: str) -> bytes:
-        reference = importlib_resources.files("tests.data") / path
-        return cast(bytes, reference.read_bytes())  # type: ignore[redundant-cast,unused-ignore]  # `cast` only required for Python < 3.10.
+        reference = resources.files("tests.data") / path
+        return reference.read_bytes()
 
     @classmethod
     def get_data_directory(cls) -> Path:
-        first_file = next(importlib_resources.files("tests.data").iterdir())
+        first_file = next(resources.files("tests.data").iterdir())
         return Path(cls.get_data_file(first_file.name)).parent
 
     @classmethod
