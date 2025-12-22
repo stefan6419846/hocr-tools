@@ -5,4 +5,4 @@ Pillow==12.0.0
 lxml==6.0.2
 python-bidi==0.6.7
 reportlab==4.4.6
-pypdf==6.4.2
+pypdf==6.5.0
