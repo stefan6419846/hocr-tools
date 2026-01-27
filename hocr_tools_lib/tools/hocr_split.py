@@ -39,12 +39,10 @@ def main() -> None:
     parser = argparse.ArgumentParser(
         description="split a multipage hOCR file into single pages"
     )
-    parser.add_argument("file", help="hOCR file", type=argparse.FileType("r"))
+    parser.add_argument("file", help="hOCR file", type=str)
     parser.add_argument(
         "pattern", help="naming pattern, e.g. 'base-%%03d.html'"
     )
     args = parser.parse_args()
 
     split(hocr=args.file, pattern=args.pattern)
-
-    args.file.close()

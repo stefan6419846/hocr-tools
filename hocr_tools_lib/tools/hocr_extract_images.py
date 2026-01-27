@@ -99,9 +99,9 @@ def main() -> None:
     parser.add_argument(
         "file",
         help="hOCR file",
-        type=argparse.FileType("r"),
+        type=str,
         nargs="?",
-        default=sys.stdin
+        default="-"
     )
     parser.add_argument("-b", "--basename", help="image-dir")
     parser.add_argument(
@@ -133,9 +133,8 @@ def main() -> None:
     )
     args = parser.parse_args()
 
+    fh = args.file if args.file not in {"-", None} else sys.stdin
     extract_images(
-        hocr=args.file, basename=args.basename, pattern=args.pattern,
+        hocr=fh, basename=args.basename, pattern=args.pattern,
         element=args.element, pad=args.pad, unicode_dammit=args.unicodedammit
     )
-
-    args.file.close()
