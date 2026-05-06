@@ -3,6 +3,6 @@
 # letting `dependabot` update them for new releases.
 Pillow==12.2.0
 lxml==6.1.0
-python-bidi==0.6.7
+python-bidi==0.6.9
 reportlab==4.5.0
 pypdf==6.10.2
