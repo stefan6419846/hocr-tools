@@ -46,4 +46,4 @@ jobs:
         mypy
     - name: codespell
       run:
-        codespell * .github/ --skip *.html
+        codespell * .github/ --skip *.html --skip *.hocr
