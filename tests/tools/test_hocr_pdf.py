@@ -1,10 +1,10 @@
 from __future__ import annotations
 
+from importlib import resources
 from pathlib import Path
 from tempfile import TemporaryDirectory
 from unittest import mock
 
-import requests
 from PIL import Image
 from pypdf import PdfReader
 from pypdf.generic import RectangleObject
@@ -14,7 +14,6 @@ from tests import TestCase
 
 
 class HocrPdfTestCase(TestCase):
-    BASE_URL = "https://digi.bib.uni-mannheim.de/fileadmin/digi/445442158"
     WORK = "445442158_0126"
 
     hocr_data = b""
@@ -24,14 +23,8 @@ class HocrPdfTestCase(TestCase):
     def setUpClass(cls) -> None:
         super().setUpClass()
 
-        with requests.Session() as session:
-            response = session.get(f"{cls.BASE_URL}/tess/{cls.WORK}.hocr")
-            assert response.status_code == 200, response.status_code
-            cls.hocr_data = response.content
-
-            response = session.get(f"{cls.BASE_URL}/max/{cls.WORK}.jpg")
-            assert response.status_code == 200, response.status_code
-            cls.jpg_data = response.content
+        cls.hocr_data = resources.files("tests.data").joinpath("hocr_pdf").joinpath(f"{cls.WORK}.hocr").read_bytes()
+        cls.jpg_data = resources.files("tests.data").joinpath("hocr_pdf").joinpath(f"{cls.WORK}.jpg").read_bytes()
 
     def _generate_files(self, directory: Path, *, skip_hocr: bool = False) -> None:
         hocr_file = directory / f"{self.WORK}.hocr"
