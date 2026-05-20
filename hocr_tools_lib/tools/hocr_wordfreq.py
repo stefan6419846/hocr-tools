@@ -9,13 +9,14 @@ import os
 import re
 import sys
 from collections.abc import Callable, Generator
-from typing import cast
+from pathlib import Path
+from typing import cast, TextIO
 
 from lxml import html
 
 
 def word_frequencies(
-        hocr_in: os.PathLike[str] | str, case_insensitive: bool = False, spaces: bool = False, dehyphenate: bool = False,
+        hocr_in: os.PathLike[str] | str | TextIO, case_insensitive: bool = False, spaces: bool = False, dehyphenate: bool = False,
         max_hits: int = 10
 ) -> Generator[str]:
     """
@@ -93,16 +94,15 @@ def main() -> None:
     parser.add_argument(
         "hocr_in",
         help="hOCR file to count frequency for (default: standard input)",
-        type=argparse.FileType("r"),
+        type=Path,
         nargs="?",
-        default=sys.stdin
+        default="-"
     )
     args = parser.parse_args()
 
+    fh = args.hocr_in if args.hocr_in not in {"-", None} else sys.stdin
     results = word_frequencies(
-        hocr_in=args.hocr_in, case_insensitive=args.case_insensitive,
+        hocr_in=fh, case_insensitive=args.case_insensitive,
         spaces=args.spaces, dehyphenate=args.dehyphenate, max_hits=args.max
     )
     print("\n".join(results))
-
-    args.hocr_in.close()

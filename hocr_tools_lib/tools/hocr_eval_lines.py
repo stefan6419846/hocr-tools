@@ -79,22 +79,20 @@ def main() -> None:
     )
     parser.add_argument(
         "tfile", help="text file with the true lines",
-        type=argparse.FileType("r")
+        type=str
     )
     parser.add_argument(
         "hfile",
         help="hOCR file with the actually recognized lines",
-        type=argparse.FileType("r")
+        type=str
     )
     parser.add_argument("-v", "--verbose", action="store_true")
     args = parser.parse_args()
 
-    segmentation_errors, ocr_errors = evaluate_lines(
-        tfile=args.tfile, hfile=args.hfile, verbose=args.verbose
-    )
+    with open(args.tfile, mode="r") as tfile:
+        segmentation_errors, ocr_errors = evaluate_lines(
+            tfile=tfile, hfile=args.hfile, verbose=args.verbose
+        )
 
     print("segmentation_errors", segmentation_errors)
     print("ocr_errors", ocr_errors)
-
-    args.tfile.close()
-    args.hfile.close()

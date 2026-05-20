@@ -7,6 +7,8 @@ from __future__ import annotations
 import argparse
 import sys
 from os import PathLike
+from pathlib import Path
+from typing import TextIO
 
 from lxml import etree, html
 
@@ -24,7 +26,7 @@ class Checker:
     Number of checks performed.
     """
 
-    def __init__(self, hocr_file: PathLike[str], no_overlap: bool = False) -> None:
+    def __init__(self, hocr_file: PathLike[str] | TextIO, no_overlap: bool = False) -> None:
         """
         :param hocr_file: hOCR file to check.
         :param no_overlap: Disable the overlap checks.
@@ -149,9 +151,9 @@ def main() -> None:
     parser.add_argument(
         "file",
         help="hOCR file to check",
-        type=argparse.FileType("r"),
+        type=str,
         nargs="?",
-        default=sys.stdin
+        default="-"
     )
     parser.add_argument(
         "-o",
@@ -161,7 +163,6 @@ def main() -> None:
     )
     args = parser.parse_args()
 
-    checker = Checker(hocr_file=args.file, no_overlap=args.nooverlap)
+    fh = Path(args.file) if args.file not in {"-", None} else sys.stdin
+    checker = Checker(hocr_file=fh, no_overlap=args.nooverlap)
     checker.check()
-
-    args.file.close()

@@ -151,12 +151,12 @@ def main() -> None:
     )
     parser.add_argument(
         "truth", help="hOCR file with ground truth",
-        type=argparse.FileType("r")
+        type=str
     )
     parser.add_argument(
         "actual",
         help="hOCR file from the actual recognition",
-        type=argparse.FileType("r")
+        type=str
     )
     parser.add_argument(
         "-e",
@@ -189,6 +189,3 @@ def main() -> None:
     for result in results:
         truth_stats, actual_stats = result
         print(truth_stats.to_tuple(), actual_stats.to_tuple())
-
-    args.truth.close()
-    args.actual.close()

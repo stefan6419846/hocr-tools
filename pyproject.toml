@@ -47,7 +47,6 @@ Changelog = "https://github.com/stefan6419846/hocr-tools/blob/next/CHANGELOG.md"
 dev = [
     # Tests.
     "beautifulsoup4",
-    "requests",
     "pypdf",
     # Linting.
     "flake8",
@@ -59,7 +58,6 @@ dev = [
     "types-html5lib",
     "types-lxml",
     "types-Pillow",
-    "types-requests",
     # Spelling.
     "codespell",
 ]

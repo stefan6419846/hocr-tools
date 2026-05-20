@@ -70,13 +70,10 @@ def main() -> None:
     parser.add_argument(
         "dc",
         help="XML file with Dublin Core metadata",
-        type=argparse.FileType("r")
+        type=str
     )
-    parser.add_argument("hocr", help="hOCR file", type=argparse.FileType("r"))
+    parser.add_argument("hocr", help="hOCR file", type=str)
     args = parser.parse_args()
 
     merged = merge_dc(dc=args.dc, hocr=args.hocr)
     print(merged)
-
-    args.dc.close()
-    args.hocr.close()
