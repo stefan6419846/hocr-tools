@@ -1,5 +1,7 @@
 # Development Version
 
+# Version 1.3.0 - 2026-10-01
+
 * Allow setting the maximum image pixel size for *Pillow* in `hocr_pdf`.
 * Drop support for Python <= 3.9.
 * Avoid using deprecated `argparse.FileType`.
